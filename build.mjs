@@ -48,46 +48,72 @@ function gearMarkup(gear) {
   if (!gear) return '';
   return '<details class="equipment"><summary>看準備與安裝教學</summary>' +
     gear.map(item => '<section><h3>' + esc(item.title) + '</h3>' +
+      '<p><strong>為什麼要準備？</strong> ' + esc(item.why) + '</p>' +
+      '<p><strong>哪一關會用到？</strong> ' + esc(item.when) + '</p>' +
       list(item.steps, 'instructions') + '<p><strong>怎麼知道準備好了？</strong> ' +
       esc(item.ready) + '</p><p><a href="' + esc(item.url) + '">' +
-      esc(item.source) + '</a></p></section>').join('') + '</details>';
+      esc(item.source) + '</a></p>' + (item.install ? '<p>' + esc(item.install.note) +
+        '</p>' + promptMarkup(item.install) : '') + '</section>').join('') + '</details>';
 }
+
+function gameScene(index, milestone = false) {
+  const shade = ['leaf-boss', 'pond-boss', 'sun-boss'][index % 3];
+  return '<div class="stage game-scene" aria-hidden="true"><div class="hero-c"><div class="hair"></div>' +
+    '<div class="hd"></div><div class="bd"></div><span class="ear l"></span><span class="ear r"></span>' +
+    '<span class="keyb"></span></div><div class="boss ' + shade + (milestone ? ' crowned' : '') +
+    '"><i></i>' + (milestone ? '<span class="crown"></span>' : '') + '</div></div>';
+}
+
+const outfit = '<fieldset class="gear-checks"><legend>把兩件裝備穿上</legend>' +
+  '<label><input type="checkbox" data-self-check data-gear="ear">🎧 我已用團隊允許的帳號登入 Codex</label>' +
+  '<label><input type="checkbox" data-self-check data-gear="key">🗝️ Codex 說出的練習資料夾名稱對得上</label></fieldset>';
+
+const capstoneCheck = '<fieldset class="gear-checks"><legend>我的功能做到這裡了</legend>' +
+  '<label><input type="checkbox" data-self-check>我做出一個可以打開試的小版本</label>' +
+  '<label><input type="checkbox" data-self-check>我親手試過，留下隊友能再試一次的步驟和結果</label></fieldset>';
 
 function lessonMarkup(lesson, index) {
   const last = index === lessons.length - 1;
   const milestone = lesson.milestone;
-  const recap = milestone ? '<section class="recap"><h3>' + esc(milestone.title) + '完成</h3>' +
+  const recap = milestone ? '<section class="recap"><h3>' + esc(milestone.title) + '</h3><p>打完這一段，你現在可以：</p>' +
     list(milestone.skills, 'instructions') + '<p>' + esc(milestone.next) + '</p></section>' : '';
   const fireworks = milestone ? '<div class="fireworks" aria-hidden="true">' +
     ['★','✦','★','✦','★'].map((star, i) => '<span style="--i:' + i + '">' + star + '</span>').join('') +
     '</div>' : '';
   return '<article class="card" id="' + lesson.slug + '" data-lesson hidden><span class="tag">第 ' + (index + 1) +
     ' 關 / ' + lessons.length + ' · ' + esc(lesson.group) + '</span><h2 tabindex="-1">' + esc(lesson.title) +
-    '</h2><p><strong>' + (milestone ? '大魔王 · ' : '小魔王 · ') + esc(lesson.boss) + '</strong>　' + esc(lesson.mission) + '</p>' +
+    '</h2>' + gameScene(index, Boolean(milestone)) + '<p><strong>' + (milestone ? '大魔王 · ' : '小魔王 · ') + esc(lesson.boss) + '</strong>　' + esc(lesson.mission) + '</p>' +
     '<button type="button" class="term-link" data-glossary-open="' + esc(lesson.lookup) + '">查小字典 · ' + esc(lesson.lookup) + '</button><p>' + esc(lesson.intro) + '</p>' +
     list(lesson.diagram, 'diagram') + gearMarkup(lesson.gear) + lesson.prompts.map(promptMarkup).join('') +
     '<details><summary>想看更細的步驟？</summary>' + list(lesson.steps, 'instructions') + '</details>' +
     (lesson.coach ? '<details><summary>團隊流程與補充</summary><p>' + esc(lesson.coach) + '</p></details>' : '') +
-    '<div class="result"><h3>做到這裡，就可以往下</h3><p>' + esc(lesson.pass) + '</p></div>' +
+    '<div class="result"><h3>做到這裡，就可以往下</h3><p>' + esc(lesson.pass) + '</p></div>' + (index === 0 ? outfit : last ? capstoneCheck : '') +
     '<div class="row"><button type="button" class="btn" data-action="complete">我做到了</button>' +
     '<button type="button" class="btn alt" data-action="help">我還沒做到</button></div>' +
     '<p class="recovery" hidden>' + esc(lesson.help) + '</p>' +
     '<div class="reward row' + (milestone ? ' milestone' : '') + '" hidden>' + fireworks + sprout(Boolean(milestone)) +
-    '<div class="reward-copy"><h3>' + (last ? '12 關完成！' : '你練會了這一步') + '</h3><p>' +
+    '<div class="reward-copy"><h3 tabindex="-1">' + (last ? '12 關完成！' : milestone ? '大魔王退場！' : '你練會了這一步') + '</h3><p>' +
     esc(lesson.skill) + '</p>' + recap + (last ? '<p>想把自己的點子加進團隊系統？把工單草稿、修改前後的畫面與測試結果交給 Kevin，和團隊確認怎麼審查與合併。</p>' : '') +
     '</div><button type="button" class="btn reward-next" data-action="next">' +
     (last ? '回到闖關首頁' : '前往第 ' + (index + 2) + ' 關') + '</button></div></article>';
 }
 
-const map = '<details class="map-panel"><summary>看 12 關的路線</summary><ol class="map">' +
-  lessons.map((lesson, index) => '<li><button type="button" data-level="' + index + '"><span>' + (index + 1) +
-    ' 關' + (lesson.milestone ? ' · 大魔王' : '') + '</span>' + esc(lesson.title) + '</button></li>').join('') + '</ol></details>';
+const map = '<details class="map-panel"><summary>看四段闖關路線</summary>' +
+  lessons.filter(lesson => lesson.milestone).map((boss, chapter) => {
+    const offset = chapter * 3;
+    return '<section class="map-chapter"><h3>' + esc(boss.milestone.title) + '</h3><ol class="map">' +
+      lessons.slice(offset, offset + 3).map((lesson, index) =>
+        '<li><button type="button" data-level="' + (offset + index) + '"' +
+        (lesson.milestone ? ' data-big' : '') + '><span>' + (offset + index + 1) +
+        ' 關' + (lesson.milestone ? ' · 大魔王' : '') + '</span>' + esc(lesson.title) + '</button></li>'
+      ).join('') + '</ol></section>';
+  }).join('') + '</details>';
 const cards = lessons.map(lessonMarkup).join('');
-const welcome = '<section class="card welcome" id="welcome"><div><h1 tabindex="-1">把你想要的功能，做進系統</h1>' +
-  '<p>你可能有過這種想法：「這個搜尋可以更好用嗎？」這 12 關帶你把「希望這裡更好用」說成一句 AI 聽得懂的話，做出一個可以親手試的小版本。</p>' +
+const welcome = '<section class="card welcome" id="welcome"><div><h1 tabindex="-1">做一個你想用的功能</h1>' +
+  '<p>想讓搜尋更好用，或加一個常用的按鈕？跟著這 12 關，把點子說給 AI 聽，做出一個可以親手試的小版本。</p>' +
   list(['說清楚想改什麼', '用 AI 做出一小版', '親手測試', '交給團隊審查'], 'route-line') +
   '<p>先用練習資料做一次。最後帶上你自己的點子，和 Kevin 及隊友一起看怎麼加進團隊系統。</p>' +
-  '<button type="button" class="btn" id="start">開始第 1 關</button></div>' + sprout(false) + '</section>';
+  '<button type="button" class="btn" id="start">開始第 1 關</button></div>' + gameScene(1, true) + '</section>';
 const footer = '<footer><p>完成紀錄存在目前的瀏覽器。換裝置或清除瀏覽資料後，可以從第 1 關再練一次。</p>' +
   '<a href="https://github.com/Kevin-Yeh-egroup/ai-development-handbook">教材 GitHub repo</a>' +
   '<details><summary>工具的官方說明</summary><ul>' +

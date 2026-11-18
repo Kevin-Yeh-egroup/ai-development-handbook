@@ -40,10 +40,28 @@
     });
   }
 
+  const checks = card => [...card.querySelectorAll('[data-self-check]')];
+
+  function paintOutfit() {
+    for (const item of checks(cards[0])) {
+      const equipped = done.has(cards[0].id) || item.checked;
+      document.querySelectorAll('.hero-c').forEach(guide => {
+        guide.classList.toggle(item.dataset.gear === 'ear' ? 'eq-on' : 'eq-key', equipped);
+      });
+    }
+  }
+
   function renderLesson(card, celebrate = false) {
     const learned = done.has(card.id);
     const confirm = card.querySelector('[data-action=complete]');
-    confirm.disabled = learned;
+    const items = checks(card);
+    for (const item of items) {
+      if (learned) item.checked = true;
+      item.disabled = learned;
+    }
+    confirm.disabled = learned || items.some(item => !item.checked);
+    card.querySelector('.boss').classList.toggle('beat', learned);
+    paintOutfit();
     confirm.textContent = learned ? '已確認 ✓' : '我做到了';
     card.querySelector('[data-action=help]').hidden = learned;
     const reward = card.querySelector('.reward');
@@ -121,6 +139,10 @@
     document.querySelector('#main').focus();
   });
 
+  document.addEventListener('change', event => {
+    if (event.target.matches('[data-self-check]')) renderLesson(event.target.closest('[data-lesson]'));
+  });
+
   document.addEventListener('click', event => {
     const button = event.target.closest('button');
     if (!button) return;
@@ -137,14 +159,15 @@
       report('目前還沒記完成，可以照提示再試一次。');
     } else if (button.dataset.action === 'complete' && active !== null) {
       const card = cards[active];
-      if (done.has(card.id) || !isUnlocked(active)) return;
+      if (done.has(card.id) || !isUnlocked(active) || checks(card).some(item => !item.checked)) return;
       done.add(card.id);
       let saved = true;
       try { localStorage.setItem(key, JSON.stringify([...done])); } catch { saved = false; }
       card.querySelector('.recovery').hidden = true;
       renderProgress();
       renderLesson(card, true);
-      card.querySelector('.reward button').focus();
+      const reward = card.querySelector('.reward');
+      (reward.matches('.milestone') ? reward.querySelector('h3') : reward.querySelector('button')).focus();
       report('第 ' + (active + 1) + ' 關完成。' +
         (saved ? '' : '目前瀏覽器無法保存進度，這次仍可繼續。'));
     } else if (button.dataset.action === 'next' && active !== null) {
@@ -154,5 +177,6 @@
   });
   window.addEventListener('popstate', followLocation);
   window.addEventListener('hashchange', followLocation);
+  paintOutfit();
   followLocation();
 })();

@@ -95,3 +95,53 @@ footer { color:var(--muted); padding-top:14px }
     100% { opacity:0; transform:translateY(-32px) scale(.8) }
   }
 }
+
+.stage{position:relative;height:210px;background:linear-gradient(#cfe9e4,#eaf5f1 70%,#b9d8cf 70%);border-radius:var(--r);overflow:hidden;border:2px solid var(--sea)}
+/* 原創角色：領路人小嚮導 */
+.hero-c{position:absolute;left:12%;bottom:26px;width:84px;height:120px}
+.hero-c .hd{position:absolute;left:10px;top:0;width:64px;height:60px;background:#ffd9b3;border-radius:50%;border:3px solid var(--sea-d)}
+.hero-c .hd::before,.hero-c .hd::after{content:"";position:absolute;top:26px;width:7px;height:9px;background:var(--ink);border-radius:50%}.hero-c .hd::before{left:16px}.hero-c .hd::after{right:16px}
+.hero-c .hair{position:absolute;left:6px;top:-4px;width:72px;height:30px;background:var(--sea-d);border-radius:40px 40px 6px 6px}
+.hero-c .bd{position:absolute;left:14px;top:58px;width:56px;height:56px;background:var(--sea);border-radius:18px 18px 8px 8px;border:3px solid var(--sea-d)}
+.ear{position:absolute;top:22px;width:14px;height:24px;border-radius:7px;background:#cfd8d6;border:3px solid #9aa9a6;transition:.3s}.ear.l{left:0}.ear.r{right:0}
+.eq-on .ear{background:var(--egg);border-color:#b17c10}
+.keyb{position:absolute;right:-22px;top:78px;width:26px;height:26px;border:5px solid #b9c4c2;border-radius:50%;opacity:.55;transition:.3s}.keyb::after{content:"";position:absolute;left:14px;top:9px;width:22px;height:5px;background:inherit;background:#b9c4c2}
+.eq-key .keyb{border-color:var(--egg);opacity:1}.eq-key .keyb::after{background:var(--egg)}
+/* 友善小魔王：空白怪 */
+.boss{position:absolute;right:14%;bottom:26px;width:110px;height:96px;background:#fff;border:3px dashed var(--sea);border-radius:50% 50% 40% 40%;transition:.4s}
+.boss::before,.boss::after{content:"";position:absolute;top:34px;width:10px;height:10px;background:var(--ink);border-radius:50%}.boss::before{left:30px}.boss::after{right:30px}
+.boss i{position:absolute;left:42px;top:58px;width:26px;height:10px;border-bottom:3px solid var(--ink);border-radius:0 0 20px 20px}
+.boss.beat{transform:scale(.55) translateY(40px);opacity:.25;filter:grayscale(1)}
+/* Original character art from the approved Claude Code prototype. */
+:root { --sea-d:var(--sea-dark); --egg:var(--yolk); --r:16px }
+.welcome { grid-template-columns:minmax(0,1.25fr) minmax(260px,1fr); background:linear-gradient(155deg,var(--mint),#fffdf6) }
+.game-scene { margin:12px 0; max-width:560px }
+.game-scene .boss { background:var(--monster,#fff) }
+.game-scene .crown { position:absolute; top:-17px; left:30px; width:44px; height:24px; background:var(--yolk); clip-path:polygon(0 0,25% 42%,50% 0,75% 42%,100% 0,91% 100%,9% 100%) }
+.game-scene .boss { --monster:#fff }
+.game-scene .boss.leaf-boss { --monster:#e5f6d8 }
+.game-scene .boss.pond-boss { --monster:#d9edf6 }
+.game-scene .boss.sun-boss { --monster:#ffeed0 }
+.game-scene .boss.crowned { border-style:solid; border-color:#a96812 }
+.game-scene:has(.boss.crowned) { background:linear-gradient(#f9ead2,#fff3d6 70%,#ead4a8 70%) }
+.gear-checks { border:0; padding:0; margin:12px 0 }
+.gear-checks legend { font-weight:800 }
+.gear-checks label { display:flex; align-items:center; gap:10px; background:#fffaf0; border:1px dashed #aec6bf; border-radius:12px; padding:9px 12px; margin:8px 0; min-height:48px; cursor:pointer }
+.gear-checks label:has(:checked) { background:#fff1bd; border-style:solid; border-color:#b7861d }
+.gear-checks input { width:20px; height:20px; flex:none; accent-color:var(--sea) }
+.equipment section + section { border-top:1px solid var(--line); padding-top:14px }
+.map-chapter { margin-block:10px }
+.map-chapter .map { grid-template-columns:repeat(3,minmax(0,1fr)) }
+.map button[data-big] { background:#fff3d6 }
+.map button[data-big][data-done] { border-color:#92600d }
+.milestone .recap h3 { color:var(--sea-dark) }
+.celebrate.milestone .fireworks { z-index:0 }
+.milestone .reward-copy,.milestone button,.milestone .sprout { position:relative; z-index:1 }
+@media (max-width:570px) {
+  .welcome { grid-template-columns:1fr }
+  .game-scene.stage { height:145px }
+  .game-scene .hero-c { left:10%; bottom:12px; transform:scale(.8); transform-origin:left bottom }
+  .game-scene .boss { right:12%; bottom:12px; scale:.8; transform-origin:right bottom }
+}
+@media (prefers-reduced-motion:reduce) { .game-scene * { transition:none !important } }
+@media print { .game-scene,.gear-checks { display:none !important } }
