@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI 協作開發入門｜新人第一張任務</title>
+<style>
+:root{--paper:#f5f0e6;--card:#fffdf8;--ink:#1c2b30;--mute:#4f5f64;--go:#0d6b5a;--go-bg:#dff1ea;--stop:#a93a16;--stop-bg:#fbe6da;--sun:#f2c14e;--r:14px;--sh:4px 4px 0 var(--ink);--gap:16px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:20px}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.7 "Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--sun);outline-offset:3px;border-radius:6px}
+.skip{position:absolute;left:-999px}.skip:focus{left:12px;top:12px;background:var(--ink);color:#fff;padding:8px 14px;z-index:9}
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:40px;max-width:1180px;margin:0 auto;padding:28px 24px 64px}
+/* 分課導覽 */
+.nav{position:sticky;top:20px;align-self:start;max-height:calc(100vh - 40px);overflow:auto}
+.brand{font-weight:900;font-size:20px;line-height:1.3;margin:0 0 18px}
+.brand small{display:block;font-size:13px;font-weight:500;color:var(--mute)}
+.nav h2{font-size:12px;letter-spacing:.12em;color:var(--mute);margin:16px 0 6px}
+.nav ol{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.nav a{display:flex;gap:10px;padding:7px 10px;border-radius:10px;text-decoration:none;font-size:15px}
+.nav a:hover{background:var(--card)}
+.nav a b{font-variant-numeric:tabular-nums;color:var(--go)}
+/* 共用元件 */
+section{margin-bottom:56px}
+h1{font-size:clamp(28px,5vw,44px);line-height:1.25;margin:0 0 10px;font-weight:900}
+h2.t{font-size:26px;margin:0 0 6px;line-height:1.35}
+h3{font-size:17px;margin:0 0 4px;line-height:1.4}
+p{margin:0 0 12px}.lead{font-size:18px;max-width:34em}.mute{color:var(--mute);font-size:14px}
+.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;padding:2px 10px;border:2px solid var(--ink);border-radius:99px;background:var(--sun);margin-bottom:10px}
+.card{background:var(--card);border:2px solid var(--ink);border-radius:var(--r);padding:16px;box-shadow:var(--sh);height:100%}
+.card p{margin:0;font-size:14px;color:var(--mute);line-height:1.55}
+.num{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;font-weight:800;font-size:14px;margin-bottom:8px}
+.flow{display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr));gap:30px;list-style:none;padding:0;margin:0 0 var(--gap)}
+.flow>li{position:relative}
+.flow>li+li::before{content:"→";position:absolute;left:-25px;top:50%;transform:translateY(-50%);font-weight:900;font-size:20px;color:var(--go)}
+.flow a{text-decoration:none;display:block;height:100%}.flow a:hover .card{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.grp{position:relative;margin-top:38px}.grp:first-of-type{margin-top:14px}
+.grp+.grp::before{content:"↓";position:absolute;top:-36px;left:50%;font-weight:900;font-size:20px;color:var(--go)}
+.grp>h3{font-size:13px;letter-spacing:.1em;color:var(--mute);margin-bottom:8px}
+.fail{background:var(--stop-bg)}.ok{background:var(--go-bg)}
+.fail .state{color:var(--stop)}.ok .state{color:var(--go)}
+.state{font-weight:800;font-size:14px;display:block;margin-top:8px}
+code,pre{font-family:ui-monospace,Consolas,"Noto Sans Mono CJK TC",monospace}
+code{background:#ebe4d4;padding:1px 6px;border-radius:5px;font-size:.9em}
+.copy{border:2px solid var(--ink);border-radius:var(--r);background:var(--ink);color:#f5f0e6;overflow:hidden;margin:0 0 var(--gap)}
+.copy header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 8px 8px 16px;font-size:14px;font-weight:700}
+.copy pre{margin:0;padding:4px 16px 16px;white-space:pre-wrap;word-break:break-word;font-size:14px;line-height:1.7;max-height:300px;overflow:auto}
+.copy.paper{background:var(--card);color:var(--ink)}
+button{font:inherit;font-weight:800;font-size:14px;min-height:44px;min-width:92px;padding:0 16px;border-radius:10px;border:2px solid var(--ink);background:var(--sun);color:var(--ink);cursor:pointer}
+button:hover{background:#ffd870}button.done{background:var(--go-bg)}
+.pass{border-left:8px solid var(--go);background:var(--go-bg);border-radius:10px;padding:12px 16px;margin:0 0 var(--gap)}
+.pass b{color:var(--go)}
+.branch{border:2px dashed var(--ink);border-radius:var(--r);padding:16px;margin-top:22px}
+.steps{margin:0 0 var(--gap);padding-left:1.4em}.steps li{margin-bottom:4px}
+details{border:2px solid var(--ink);border-radius:var(--r);background:var(--card);padding:0 16px;margin:0 0 var(--gap)}
+summary{cursor:pointer;font-weight:800;padding:12px 0;min-height:44px}
+details>*:last-child{margin-bottom:16px}
+.words{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--gap)}
+.words b{display:block;font-size:17px}
+footer{font-size:13px;color:var(--mute);border-top:2px solid var(--ink);padding-top:14px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+@media(max-width:860px){
+ html{scroll-padding-top:72px}
+ .shell{display:block;padding:0 16px 48px}
+ .nav{top:0;z-index:5;background:var(--paper);margin:0 -16px 20px;padding:10px 16px;border-bottom:2px solid var(--ink);max-height:none}
+ .brand{font-size:16px;margin:0 0 8px}.brand small,.nav h2{display:none}
+ .nav>div{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+ .nav ol{display:flex;gap:6px}.nav a{white-space:nowrap;border:2px solid var(--ink);background:var(--card);min-height:44px;align-items:center}
+ .flow{grid-template-columns:1fr}
+ .flow>li+li::before{content:"↓";left:50%;top:-30px;transform:translateX(-50%)}
+ .words{grid-template-columns:1fr 1fr}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.flow a:hover .card{transform:none}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">跳到內容</a>
+<div class="shell">
+<nav class="nav" aria-label="分課導覽">
+ <p class="brand">AI 協作開發入門<small>沒寫過程式也能走完第一張任務</small></p>
+ <div>
+  <h2>開工</h2>
+  <ol>
+   <li><a href="#setup"><b>01</b>開工設定</a></li>
+   <li><a href="#codex-standing-prompt"><b>02</b>Codex 常駐工作指令</a></li>
+   <li><a href="#offline-search-practice"><b>03</b>離線搜尋練習</a></li>
+  </ol>
+  <h2>第一張任務</h2>
+  <ol>
+   <li><a href="#issue"><b>04</b>Issue</a></li>
+   <li><a href="#branch"><b>05</b>Branch</a></li>
+   <li><a href="#change-and-fix-bug"><b>06</b>修改與修 bug</a></li>
+   <li><a href="#verify-and-commit"><b>07</b>驗證並存檔</a></li>
+  </ol>
+  <h2>送審</h2>
+  <ol>
+   <li><a href="#draft-pr"><b>08</b>Draft PR</a></li>
+   <li><a href="#notify-it"><b>09</b>通知 IT</a></li>
+  </ol>
+  <h2>進階</h2>
+  <ol>
+   <li><a href="#optimize"><b>10</b>優化</a></li>
+   <li><a href="#minimal-project"><b>11</b>建立最小專案</a></li>
+   <li><a href="#agent-handoff"><b>12</b>Agent 分工</a></li>
+  </ol>
+ </div>
+</nav>
+
+<main id="main">
+<!-- 01 開工設定：首屏 -->
+<section id="setup">
+ <span class="tag">01 · 從這裡開始</span>
+ <h1>今天只做一件事：<br>讓 Codex 說出它在哪個資料夾</h1>
+ <p class="lead">你說清楚想要的結果，Codex 動手改，最後由你親自確認。第一次可以請帶教人坐在旁邊。</p>
+ <ol class="flow" aria-label="開工四步">
+  <li><div class="card"><span class="num">1</span><h3>打開 Codex</h3><p>用團隊允許的帳號登入。</p></div></li>
+  <li><div class="card"><span class="num">2</span><h3>開啟練習資料夾</h3><p>帶教人會給你，像一張練習用的工作桌。</p></div></li>
+  <li><div class="card"><span class="num">3</span><h3>貼上第一句話</h3><p>按下方的「複製」，貼到聊天送出。</p></div></li>
+  <li><div class="card ok"><span class="num">4</span><h3>核對資料夾名稱</h3><p>和帶教人給的一樣，就過關。</p></div></li>
+ </ol>
+ <div class="copy">
+  <header><span>第一句話 · 貼給 Codex</span><button type="button" data-copy="p-first">複製</button></header>
+  <pre id="p-first">我第一次做這個。請用唯讀方式告訴我：你現在開啟的是哪個資料夾？接下來請一次教我一步，說明我要按哪裡，以及做完會看到什麼。</pre>
+ </div>
+ <p class="pass"><b>過關畫面</b>　Codex 回覆的資料夾名稱，和帶教人給你的一致。對不上時，先請帶教人核對資料夾。</p>
+ <details>
+  <summary>給帶教人：團隊設定卡</summary>
+  <p class="mute">先填前三行就能開始第一堂。IT 窗口與通知管道以這張卡為準。</p>
+  <div class="copy paper">
+   <header><span>團隊設定卡</span><button type="button" data-copy="p-card">複製</button></header>
+   <pre id="p-card">練習資料夾：
+練習專案 GitHub 網址：
+遇到問題可以問誰：
+正式專案／預設分支：
+啟動與檢查方式：
+預覽由誰確認：
+GitHub 審查人／IT 通知對象及管道：
+什麼時候通知 IT：
+誰可以合併或部署：
+Claude 可使用的資料範圍與共用產品體驗標準位置：</pre>
+  </div>
+ </details>
+</section>
+
+<!-- 02 常駐工作指令 -->
+<section id="codex-standing-prompt">
+ <span class="tag">02 · 貼一次，整個聊天都適用</span>
+ <h2 class="t">Codex 常駐工作指令</h2>
+ <p>這段是給 Codex 讀的工作約定。貼上後它會先做唯讀健檢，然後停下來等你的任務。</p>
+ <div class="copy">
+  <header><span>常駐工作指令 · 整段貼給 Codex</span><button type="button" data-copy="p-standing">複製</button></header>
+  <pre id="p-standing" tabindex="0">你是我的 AI 開發搭檔。用繁體中文協作，我負責需求、實際驗收與發布決定，你負責有授權的查找、修改、驗證與交接。
+
+收到這段後，直接開始唯讀健檢。回報目前資料夾、Git remote（遮蔽憑證）、分支、工作區是否有未提交變更、讀到的 AGENTS.md 與 README，以及可用的啟動與驗證指令。若這裡沒有 Git 或專案，指出原因並建議最小下一步。這一步做完就等我指定第一張任務。
+
+收到任務後：
+1. 核對專案規則及 Issue。用一句話重述目標，寫下可觀察的驗收條件。需求明確就往下做。遇到會改變需求、權限不足或會覆蓋他人工作時，提出最需要我決定的一個問題。
+2. 依專案規則確認 Issue 後，從最新指定基底建立對應分支。正式專案缺 Issue 時先擬草稿，收到建立授權才發到 GitHub。若團隊採工單分支規則，就從最新 origin/main 開 issue/&lt;編號&gt;-&lt;短名稱&gt;，優先使用獨立 worktree。
+3. 涉及正式 UI、操作流程或使用者體驗時，先核對已有的確認稿。需要新稿時，準備交接給正確專案的本機 Claude Code，帶入共用產品體驗標準，取得可渲染稿與人員確認，再做正式實作。Claude 與 Codex 依序接手，同一時間只有一個人或工具寫入工作副本。
+4. 維持小改動，沿用既有實作。執行與變更相稱的檢查，記下命令、結果、失敗或跳過原因。UI 依實際操作路徑驗收，使用測試或去識別資料。
+5. 按授權與專案規則建立本機 commit，只納入本次檔案。回報 Issue、分支、commit、改動摘要、驗收結果和預覽證據。
+6. 外部建立 Issue、push、開 PR、設為 Ready、外部通知、merge 與部署，依目前授權及專案規則辦理。沒有授權時只準備草稿。若團隊採預覽確認流程，push／開 PR 前先交預覽並取得對應確認，預設 Draft PR。檢查 PR head、CI、mergeability 及畫面證據，Ready 與通知 IT 依團隊流程。通知前核對對象、管道與內容，缺資料時先備通知稿。
+7. 遇到錯誤先查原因並在授權內修復。使用官方登入流程，避免讀出或傳送密鑰及個資。交接時列出可重現證據和還需人員決定的事項。
+
+任務格式：專案／Issue、我想改什麼、如何驗收、這次允許你做到哪一步。若我只提供目標，先查現況並在已授權範圍內推進。</pre>
+ </div>
+ <p class="pass"><b>過關畫面</b>　Codex 回報資料夾、分支、有沒有未存檔的修改，然後停下來等你。開新聊天要重貼一次。</p>
+</section>
+
+<!-- 全程路線 -->
+<section id="route" aria-labelledby="route-t">
+ <span class="tag">全程路線</span>
+ <h2 class="t" id="route-t">每次只走一格</h2>
+ <p>練習題很小：搜尋「入門」時前後多了空白，就找不到「程式入門」。</p>
+ <div class="grp"><h3>開工</h3>
+  <ol class="flow" style="--n:3">
+   <li><a href="#setup"><div class="card"><span class="num">01</span><h3>開工設定</h3><p>登入，打開練習資料夾。</p></div></a></li>
+   <li><a href="#codex-standing-prompt"><div class="card"><span class="num">02</span><h3>常駐工作指令</h3><p>和 Codex 約好怎麼合作。</p></div></a></li>
+   <li id="offline-search-practice"><div class="card"><span class="num">03</span><h3>離線搜尋練習</h3><p>做出小題，先看一次預期的失敗。</p></div></li>
+  </ol>
+ </div>
+ <div class="grp"><h3>第一張任務</h3>
+  <ol class="flow">
+   <li id="issue"><div class="card"><span class="num">04</span><h3>Issue</h3><p>開工單：哪裡怪？怎樣算做好？</p></div></li>
+   <li id="branch"><div class="card"><span class="num">05</span><h3>Branch</h3><p>給這次修改自己的空間。</p></div></li>
+   <li><a href="#change-and-fix-bug"><div class="card"><span class="num">06</span><h3>修改與修 bug</h3><p>改一小步，從失敗走到通過。</p></div></a></li>
+   <li id="verify-and-commit"><div class="card"><span class="num">07</span><h3>驗證並存檔</h3><p>親手再試一次，存一個版本。</p></div></li>
+  </ol>
+  <div class="branch">
+   <h3>要改正式畫面或操作流程？動手前先走這條</h3>
+   <ol class="flow" style="--n:3;margin:12px 0 0">
+    <li><div class="card"><h3>Claude 先畫稿</h3><p>實際打得開、桌機手機都有的畫面。</p></div></li>
+    <li><div class="card"><h3>負責人確認</h3><p>看過稿、走一遍流程。</p></div></li>
+    <li><div class="card ok"><h3>Codex 才實作</h3><p>做完逐項對稿。</p></div></li>
+   </ol>
+  </div>
+ </div>
+ <div class="grp"><h3>送審（取得授權後才對外）</h3>
+  <ol class="flow" style="--n:2">
+   <li id="draft-pr"><div class="card"><span class="num">08</span><h3>Draft PR</h3><p>開一張審查草稿，附上證據。</p></div></li>
+   <li id="notify-it"><div class="card"><span class="num">09</span><h3>通知 IT</h3><p>說清楚請對方看哪一點。</p></div></li>
+  </ol>
+ </div>
+ <div class="grp"><h3>進階</h3>
+  <ol class="flow" style="--n:3">
+   <li id="optimize"><div class="card"><span class="num">10</span><h3>優化</h3><p>先量、再改、再量，行為不變。</p></div></li>
+   <li id="minimal-project"><div class="card"><span class="num">11</span><h3>建立最小專案</h3><p>不裝套件，本機就能驗收。</p></div></li>
+   <li id="agent-handoff"><div class="card"><span class="num">12</span><h3>Agent 分工</h3><p>一個人寫，另一個只看。</p></div></li>
+  </ol>
+ </div>
+</section>
+
+<!-- 單課版型：每課共用 -->
+<section id="change-and-fix-bug">
+ <span class="tag">06 · 第一張任務</span>
+ <h2 class="t">修改與修 bug</h2>
+ <p>只改一個地方，親眼看測試從失敗變通過。先完成第 03、05 課。</p>
+ <ol class="flow" style="--n:3" aria-label="修改前後對照">
+  <li><div class="card fail"><h3>修改前</h3><p>搜尋「<code>  入門  </code>」<br>找不到「程式入門」</p><span class="state">✖ 帶空白搜尋：失敗</span></div></li>
+  <li><div class="card"><h3>只改一處</h3><p>比對之前，先去掉關鍵字前後的空白。</p><span class="state">空查詢規則不動</span></div></li>
+  <li><div class="card ok"><h3>修改後</h3><p>搜尋「<code>  入門  </code>」<br>找到「程式入門」</p><span class="state">✔ 兩項測試：通過</span></div></li>
+ </ol>
+ <ol class="steps">
+  <li>先重跑測試，確認失敗還在。</li>
+  <li>請 Codex 做最小修改。</li>
+  <li>再跑一次，看到通過。</li>
+ </ol>
+ <div class="copy">
+  <header><span>最小修改 · 貼給 Codex</span><button type="button" data-copy="p-fix">複製</button></header>
+  <pre id="p-fix">只在搜尋比對前處理 query 的前後空白。先檢查既有規則，尤其是空查詢，行為要維持不變。改完執行 node --test search.test.cjs，回報改了哪幾行，以及修改前失敗、修改後通過的測試輸出。不要為了通過而修改測試的預期結果。</pre>
+ </div>
+ <p class="pass"><b>過關畫面</b>　你能示範同一個測試：改之前失敗，改之後通過。</p>
+ <details>
+  <summary>帶教補充</summary>
+  <p>測試仍失敗時，請 Codex 先說明原因再修。需要第二雙眼睛，到第 12 課請本機 Claude 做唯讀複核。若任務擴大成重做畫面，先走「Claude 畫稿 → 負責人確認 → 實作」。</p>
+ </details>
+</section>
+
+<section aria-labelledby="words-t">
+ <span class="tag">看到英文別緊張</span>
+ <h2 class="t" id="words-t">六個詞，用日常的話說</h2>
+ <div class="words">
+  <div class="card"><b>Issue</b><p>開工單：問題和完成條件</p></div>
+  <div class="card"><b>Branch</b><p>這次修改自己的工作空間</p></div>
+  <div class="card"><b>Commit</b><p>存一個有名字的版本</p></div>
+  <div class="card"><b>Pull Request</b><p>請隊友檢查修改的頁面</p></div>
+  <div class="card"><b>CI</b><p>送出後自動幫忙檢查</p></div>
+  <div class="card"><b>Draft／Ready</b><p>草稿／可以請人審查</p></div>
+ </div>
+</section>
+
+<footer>設計稿 v0.1 · 待負責人確認 · 第 03–05、07–12 課沿用第 06 課的單課版型，內容見 lessons.json · 練習一律使用假資料</footer>
+</main>
+</div>
+<p class="sr" id="say" aria-live="polite"></p>
+<script>
+document.querySelectorAll('[data-copy]').forEach(function(b){
+ b.dataset.label=b.textContent;
+ b.addEventListener('click',async function(){
+  var text=document.getElementById(b.dataset.copy).textContent.trim(),ok=true;
+  try{await navigator.clipboard.writeText(text)}
+  catch(e){var a=document.createElement('textarea');a.value=text;document.body.appendChild(a);a.select();
+   try{ok=document.execCommand('copy')}catch(_){ok=false}a.remove()}
+  b.textContent=ok?'已複製 ✓':'請手動選取';b.classList.toggle('done',ok);
+  document.getElementById('say').textContent=ok?'已複製到剪貼簿':'複製失敗，請手動選取文字';
+  setTimeout(function(){b.textContent=b.dataset.label;b.classList.remove('done')},1800);
+ });
+});
+</script>
+</body>
+</html>
