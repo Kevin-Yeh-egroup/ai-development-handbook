@@ -22,7 +22,8 @@ for (const lesson of lessons) {
   for (const field of ['diagram', 'steps', 'prompts']) {
     if (!Array.isArray(lesson[field]) || !lesson[field].length) throw new Error(lesson.slug + ' 缺少 ' + field);
   }
-  if (!lesson.prompts.every(item => typeof item.text === 'string' && item.text.trim() && item.label) ||
+  if (!lesson.prompts.every(item => typeof item.text === 'string' && item.text.trim() && item.label &&
+      Number.isInteger(item.step) && item.step >= 1 && item.step <= lesson.steps.length) ||
       !lesson.prompts.some(item => item.label.includes('貼給 Codex'))) {
     throw new Error(lesson.slug + ' 缺少可複製給 Codex 的指令');
   }
@@ -77,7 +78,12 @@ const capstoneCheck = '<fieldset class="gear-checks"><legend>我的功能做到�
 
 function lessonMarkup(lesson, index, offline) {
   const last = index === lessons.length - 1;
-  const optional = lesson.prompts.filter(prompt => prompt.optional);
+  const promptsAtStep = step => {
+    const prompts = lesson.prompts.filter(prompt => prompt.step === step);
+    const extra = prompts.filter(prompt => prompt.optional);
+    return prompts.filter(prompt => !prompt.optional).map(promptMarkup).join('') +
+      (extra.length ? '<details><summary>其他指令與範本</summary>' + extra.map(promptMarkup).join('') + '</details>' : '');
+  };
   const milestone = lesson.milestone;
   const recap = milestone ? '<section class="recap"><h3>' + esc(milestone.title) + '</h3><p>打完這一段，你現在可以：</p>' +
     list(milestone.skills, 'instructions') + '<p>' + esc(milestone.next) + '</p></section>' : '';
@@ -89,9 +95,7 @@ function lessonMarkup(lesson, index, offline) {
     '</h2>' + gameScene(index, Boolean(milestone)) + '<p><strong>' + (milestone ? '大魔王 · ' : '小魔王 · ') + esc(lesson.boss) + '</strong>　' + esc(lesson.mission) + '</p>' +
     '<button type="button" class="term-link" data-glossary-open="' + esc(lesson.lookup) + '">查小字典 · ' + esc(lesson.lookup) + '</button><p>' + esc(lesson.intro) + '</p>' +
     list(lesson.diagram, 'diagram') + gearMarkup(lesson.gear) +
-    lesson.prompts.filter(prompt => !prompt.optional).map(promptMarkup).join('') +
-    (optional.length ? '<details><summary>其他指令與範本</summary>' + optional.map(promptMarkup).join('') + '</details>' : '') +
-    walkthrough.markup(lesson, offline) +
+    walkthrough.markup(lesson, offline, promptsAtStep) +
     (lesson.coach ? '<details><summary>團隊流程與補充</summary><p>' + esc(lesson.coach) + '</p></details>' : '') +
     '<div class="result"><h3>做到這裡，就可以往下</h3><p>' + esc(lesson.pass) + '</p></div>' + (index === 0 ? outfit : last ? capstoneCheck : '') +
     '<div class="row"><button type="button" class="btn" data-action="complete">我做到了</button>' +

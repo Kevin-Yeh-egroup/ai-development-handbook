@@ -48,12 +48,12 @@ export async function loadWalkthrough(course) {
       '</p></figure>';
   }
 
-  function markup(lesson, offline) {
+  function markup(lesson, offline, promptsAtStep) {
     const groups = lessons[lesson.slug];
     const sourceNote = lesson.slug === 'setup' ? '<p>圖是 OpenAI 的官方練習畫面。你的來源資料夾請選剛建的 ai-practice，按鈕文字會隨版面或語言略有差異。</p>' :
       lesson.slug === 'codex-standing-prompt' ? '<p>用第 1 關同一個聊天。圖片裡是第一關的文字，這次貼第二關的指令。</p>' : '';
     const items = lesson.steps.map((step, index) =>
-      '<li><p>' + esc(step) + '</p>' + groups[index].map(id => figure(id, offline)).join('') + '</li>');
+      '<li><p>' + esc(step) + '</p>' + groups[index].map(id => figure(id, offline)).join('') + promptsAtStep(index + 1) + '</li>');
     return '<section class="walkthrough"><h3>照這個順序做</h3>' + sourceNote +
       '<ol class="lesson-steps">' + items.join('') + '</ol></section>';
   }
