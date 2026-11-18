@@ -120,9 +120,10 @@
     const prompt = button.closest('.prompt');
     const content = prompt.querySelector('pre');
     const feedback = prompt.querySelector('.feedback');
+    const guide = prompt.querySelector('.copy-guide');
     try {
       await navigator.clipboard.writeText(content.textContent);
-      feedback.textContent = button.textContent.includes('Codex') ? '已複製，貼到 Codex 就可以開始。' : '已複製。';
+      feedback.textContent = guide ? '已複製。接下來照下面三步做。' : '已複製。';
     } catch {
       prompt.querySelector('details').open = true;
       const range = document.createRange();
@@ -132,6 +133,7 @@
       selection.addRange(range);
       feedback.textContent = '已選取指令。請用瀏覽器的複製功能。';
     }
+    if (guide) guide.hidden = false;
   }
 
   document.querySelector('.skip').addEventListener('click', event => {

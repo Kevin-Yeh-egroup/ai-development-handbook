@@ -42,9 +42,16 @@ function promptMarkup(prompt) {
   const isClaude = prompt.label.includes('Claude Code') && !prompt.label.includes('貼給 Codex');
   const isTemplate = !isClaude && !prompt.label.includes('貼給 Codex');
   const label = isClaude ? '複製給 Claude' : isTemplate ? '複製範本' : '複製給 Codex';
+  const headings = ['貼到這裡', '看到這個結果', '回教材接著做'];
+  if (!isTemplate && (prompt.afterCopy?.length !== headings.length ||
+      !prompt.afterCopy.every(step => typeof step === 'string' && step.trim()))) {
+    throw new Error('缺少複製後的提示：' + prompt.label);
+  }
+  const guide = prompt.afterCopy ? '<ol class="copy-guide" hidden>' + prompt.afterCopy.map((step, index) =>
+    '<li><strong>' + headings[index] + '</strong><span>' + esc(step) + '</span></li>').join('') + '</ol>' : '';
   return '<div class="prompt"><div class="row"><strong>' + esc(prompt.label) +
     '</strong><button type="button" class="btn alt" data-copy>' + label + '</button></div>' +
-    '<p class="feedback" role="status"></p><details><summary>看完整內容</summary><pre tabindex="0">' +
+    '<p class="feedback" role="status"></p>' + guide + '<details><summary>看完整內容</summary><pre tabindex="0">' +
     esc(prompt.text) + '</pre></details></div>';
 }
 

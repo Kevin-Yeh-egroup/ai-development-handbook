@@ -173,3 +173,8 @@ footer { color:var(--muted); padding-top:14px }
 .shot-viewer-canvas .shot-frame { display:block; width:max(100%,var(--shot-width)); max-width:none }
 .shot-viewer-hint { margin:7px 0 0; color:var(--muted) }
 @media print { .shot-viewer,.shot-open-label { display:none !important } }
+.copy-guide { margin:8px 0 12px; padding:10px 12px 10px 32px; background:#e8f4ef; border-radius:10px }
+.copy-guide li + li { margin-top:7px }
+.copy-guide strong,.copy-guide span { display:block }
+.copy-guide strong { color:var(--sea-dark) }
+.copy-guide span { overflow-wrap:anywhere }
