@@ -82,3 +82,16 @@ footer { color:var(--muted); padding-top:14px }
   details:not([open]) > :not(summary) { display:block !important }
   pre { max-height:none; overflow:visible }
 }
+.milestone { position:relative; border:2px solid #e1b745; background:#fff1bd; isolation:isolate }
+.milestone .reward-copy { flex-basis:calc(100% - 90px) }
+.recap { margin:12px 0; padding:12px; background:#fffdf5; border-radius:10px }
+.fireworks { position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:-1 }
+.fireworks span { position:absolute; color:#b2730a; top:16px; left:calc(15% + var(--i) * 17%); opacity:0; font-size:28px }
+@media (prefers-reduced-motion:no-preference) {
+  .milestone.celebrate .fireworks span { animation:stage-stars 1.15s ease-out both; animation-delay:calc(var(--i) * 55ms) }
+  @keyframes stage-stars {
+    0% { opacity:0; transform:translateY(38px) scale(.25) }
+    32% { opacity:1; transform:translateY(-12px) scale(1.2) }
+    100% { opacity:0; transform:translateY(-32px) scale(.8) }
+  }
+}

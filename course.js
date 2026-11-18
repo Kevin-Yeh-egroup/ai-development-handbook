@@ -35,7 +35,7 @@
       button.toggleAttribute('data-done', learned);
       button.setAttribute('aria-disabled', String(!available));
       button.setAttribute('aria-current', String(index === active));
-      button.firstElementChild.textContent = (learned ? '✓ ' : '') + (index + 1) + ' 關' + (available ? '' : ' · 待解鎖');
+      button.firstElementChild.textContent = (learned ? '✓ ' : '') + (index + 1) + ' 關' + (cards[index].querySelector('.milestone') ? ' · 大魔王' : '') + (available ? '' : ' · 待解鎖');
       button.setAttribute('aria-label', button.textContent.trim() + (learned ? '，已完成' : available ? '' : '，待解鎖'));
     });
   }

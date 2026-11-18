@@ -1,0 +1,8 @@
+.glossary input { width:100%; min-height:44px; padding:8px 10px; font:inherit; border:1px solid #526660; border-radius:8px }
+.glossary label { display:block; font-weight:700 }
+.glossary dl { margin:6px 0 }
+.glossary [data-term] { border-block-start:1px solid #cfe3dc; padding:10px 0 }
+.glossary dt { font-weight:800; color:#15534c }
+.glossary dd { margin:4px 0 0; overflow-wrap:anywhere }
+.glossary [hidden] { display:none !important }
+.term-link { margin:0 0 8px; min-height:44px; border:0; background:transparent; color:#15534c; text-decoration:underline; font:inherit; cursor:pointer }

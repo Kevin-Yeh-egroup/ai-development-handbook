@@ -1,8 +1,11 @@
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
+import { glossaryMarkup } from './glossary.mjs';
 
 const read = name => readFile(new URL(name, import.meta.url), 'utf8');
 const [source, css, script] = await Promise.all([read('lessons.json'), read('course.css'), read('course.js')]);
 const lessons = JSON.parse(source);
+const [glossarySource, glossaryCss, glossaryScript] = await Promise.all([read('glossary.json'),read('glossary.css'),read('glossary.js')]);
+const glossary = glossaryMarkup(JSON.parse(glossarySource.replace(/^\uFEFF/, '')));
 const output = new URL('./site/', import.meta.url);
 
 if (!Array.isArray(lessons) || lessons.length !== 12) throw new Error('預期有 12 關教材。');
@@ -12,7 +15,7 @@ for (const lesson of lessons) {
     throw new Error('課程網址不合法或重複：' + lesson.slug);
   }
   slugs.add(lesson.slug);
-  for (const field of ['title', 'group', 'intro', 'pass', 'skill', 'help']) {
+  for (const field of ['title', 'group', 'intro', 'pass', 'skill', 'help', 'boss', 'mission', 'lookup']) {
     if (typeof lesson[field] !== 'string' || !lesson[field].trim()) throw new Error(lesson.slug + ' 缺少 ' + field);
   }
   for (const field of ['diagram', 'steps', 'prompts']) {
@@ -52,9 +55,16 @@ function gearMarkup(gear) {
 
 function lessonMarkup(lesson, index) {
   const last = index === lessons.length - 1;
+  const milestone = lesson.milestone;
+  const recap = milestone ? '<section class="recap"><h3>' + esc(milestone.title) + '完成</h3>' +
+    list(milestone.skills, 'instructions') + '<p>' + esc(milestone.next) + '</p></section>' : '';
+  const fireworks = milestone ? '<div class="fireworks" aria-hidden="true">' +
+    ['★','✦','★','✦','★'].map((star, i) => '<span style="--i:' + i + '">' + star + '</span>').join('') +
+    '</div>' : '';
   return '<article class="card" id="' + lesson.slug + '" data-lesson hidden><span class="tag">第 ' + (index + 1) +
     ' 關 / ' + lessons.length + ' · ' + esc(lesson.group) + '</span><h2 tabindex="-1">' + esc(lesson.title) +
-    '</h2><p>' + esc(lesson.intro) + '</p>' +
+    '</h2><p><strong>' + (milestone ? '大魔王 · ' : '小魔王 · ') + esc(lesson.boss) + '</strong>　' + esc(lesson.mission) + '</p>' +
+    '<button type="button" class="term-link" data-glossary-open="' + esc(lesson.lookup) + '">查小字典 · ' + esc(lesson.lookup) + '</button><p>' + esc(lesson.intro) + '</p>' +
     list(lesson.diagram, 'diagram') + gearMarkup(lesson.gear) + lesson.prompts.map(promptMarkup).join('') +
     '<details><summary>想看更細的步驟？</summary>' + list(lesson.steps, 'instructions') + '</details>' +
     (lesson.coach ? '<details><summary>團隊流程與補充</summary><p>' + esc(lesson.coach) + '</p></details>' : '') +
@@ -62,21 +72,21 @@ function lessonMarkup(lesson, index) {
     '<div class="row"><button type="button" class="btn" data-action="complete">我做到了</button>' +
     '<button type="button" class="btn alt" data-action="help">我還沒做到</button></div>' +
     '<p class="recovery" hidden>' + esc(lesson.help) + '</p>' +
-    '<div class="reward row" hidden>' + sprout((index + 1) % 3 === 0 || last) +
+    '<div class="reward row' + (milestone ? ' milestone' : '') + '" hidden>' + fireworks + sprout(Boolean(milestone)) +
     '<div class="reward-copy"><h3>' + (last ? '12 關完成！' : '你練會了這一步') + '</h3><p>' +
-    esc(lesson.skill) + '</p>' + (last ? '<p>想把自己的點子加進團隊系統？把工單草稿、修改前後的畫面與測試結果交給 Kevin，和團隊確認怎麼審查與合併。</p>' : '') +
+    esc(lesson.skill) + '</p>' + recap + (last ? '<p>想把自己的點子加進團隊系統？把工單草稿、修改前後的畫面與測試結果交給 Kevin，和團隊確認怎麼審查與合併。</p>' : '') +
     '</div><button type="button" class="btn reward-next" data-action="next">' +
     (last ? '回到闖關首頁' : '前往第 ' + (index + 2) + ' 關') + '</button></div></article>';
 }
 
 const map = '<details class="map-panel"><summary>看 12 關的路線</summary><ol class="map">' +
   lessons.map((lesson, index) => '<li><button type="button" data-level="' + index + '"><span>' + (index + 1) +
-    ' 關</span>' + esc(lesson.title) + '</button></li>').join('') + '</ol></details>';
+    ' 關' + (lesson.milestone ? ' · 大魔王' : '') + '</span>' + esc(lesson.title) + '</button></li>').join('') + '</ol></details>';
 const cards = lessons.map(lessonMarkup).join('');
 const welcome = '<section class="card welcome" id="welcome"><div><h1 tabindex="-1">把你想要的功能，做進系統</h1>' +
-  '<p>你可能有過這種想法：「這個搜尋可以更好用嗎？」這 12 關會帶你把想法說清楚，請 Codex 幫你動手，自己試過，再把修改交給團隊一起看。</p>' +
+  '<p>你可能有過這種想法：「這個搜尋可以更好用嗎？」這 12 關帶你把「希望這裡更好用」說成一句 AI 聽得懂的話，做出一個可以親手試的小版本。</p>' +
   list(['說清楚想改什麼', '用 AI 做出一小版', '親手測試', '交給團隊審查'], 'route-line') +
-  '<p>從練習資料夾開始，學會修問題、做小功能、和 Claude 分工。正式系統的修改，依團隊流程審查後再合併。</p>' +
+  '<p>先用練習資料做一次。最後帶上你自己的點子，和 Kevin 及隊友一起看怎麼加進團隊系統。</p>' +
   '<button type="button" class="btn" id="start">開始第 1 關</button></div>' + sprout(false) + '</section>';
 const footer = '<footer><p>完成紀錄存在目前的瀏覽器。換裝置或清除瀏覽資料後，可以從第 1 關再練一次。</p>' +
   '<a href="https://github.com/Kevin-Yeh-egroup/ai-development-handbook">教材 GitHub repo</a>' +
@@ -90,18 +100,18 @@ const footer = '<footer><p>完成紀錄存在目前的瀏覽器。換裝置或�
 function render({ entry = '', offline = false } = {}) {
   return '<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8">' +
     '<meta name="viewport" content="width=device-width,initial-scale=1">' +
-    '<title>AI 協作開發｜12 關實作</title><style>\n' + css + '</style></head>' +
+    '<title>AI 協作開發｜12 關實作</title><style>\n' + css + glossaryCss + '</style></head>' +
     '<body data-entry="' + entry + '"><a class="skip" href="#main">跳到課程內容</a><div class="wrap">' +
     '<header class="top"><strong>AI 協作開發｜12 關實作</strong><div class="row">' +
     '<button class="btn alt" type="button" id="back-home">闖關首頁</button>' +
     (offline ? '' : '<a href="handbook.html" download>下載離線版</a>') + '</div></header>' +
-    '<main id="main" tabindex="-1">' + welcome +
+    '<main id="main" tabindex="-1">' + welcome + glossary +
     '<div class="row progress"><div class="progress-track" id="progress" role="progressbar" aria-label="完成關卡數" ' +
     'aria-valuemin="0" aria-valuemax="' + lessons.length + '" aria-valuenow="0"><i></i></div><b id="count"></b></div>' +
     map + cards + '</main><p class="sr" role="status" id="live"></p>' +
     '<noscript><p>啟用 JavaScript 後就能逐關完成並保存進度。下方仍可閱讀所有課程。</p>' +
     '<style>main article[data-lesson][hidden]{display:block!important}button,.reward{display:none!important}</style></noscript>' +
-    footer + '</div><script>\n' + script + '</script></body></html>\n';
+    footer + '</div><script>\n' + script + glossaryScript + '</script></body></html>\n';
 }
 
 await mkdir(output, { recursive: true });
