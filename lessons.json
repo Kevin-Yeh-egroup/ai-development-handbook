@@ -10,10 +10,10 @@
       "貼一句話，核對資料夾名稱"
     ],
     "steps": [
-      "打開「文件」，自己新增一個叫 ai-practice 的資料夾。裡面先留空，課程會請 Codex 產生練習檔案。",
-      "打開 Codex 桌面 App，用團隊允許的帳號登入，選擇開啟剛才那個資料夾。",
-      "按「複製給 Codex」，貼到 Codex 的聊天輸入框，再送出。",
-      "看到 Codex 回報正確的資料夾後，回到這一頁，勾選兩件裝備，再按「我做到了」。"
+      "Windows：按 Win + E 打開「檔案總管」，在左側點「文件」。在空白處按右鍵，選「新增 → 資料夾」，命名為 ai-practice。Mac：在 Finder 的「文件」新增同名資料夾。裡面先留空。",
+      "回到 ChatGPT 桌面 App，切到 Codex。Windows 按 Ctrl + O，Mac 按 Command + O。在跳出的視窗進入「文件」，單擊 ai-practice，再按「選取資料夾」或「開啟」。",
+      "在 Codex 左側找到 ai-practice，從這個專案開一個新聊天。回到教材按「複製給 Codex」，把指令貼到剛開的聊天輸入框並送出。",
+      "Codex 回覆的資料夾名稱應該是 ai-practice。看到後再回到教材，勾兩件裝備並按「我做到了」。"
     ],
     "prompts": [
       {
@@ -34,13 +34,13 @@
     "pass": "你已登入 Codex，它說出的資料夾名稱也跟你剛開的一樣。勾完耳機和鑰匙，關卡才會亮起完成按鈕。",
     "coach": "設定卡先填前三行就能開始第一堂，其餘欄位在接正式任務前補齊；IT 窗口、通知管道與時機一律以這張卡為準。Git 用來記錄修改，Node.js 用來跑本課程的小測試，版本依專案 README。Git 提交身分使用團隊認可的姓名與電郵。只有需要讓 Codex 從終端操作 GitHub 時才加裝 GitHub CLI，並以官方登入流程登入後核對帳號。Claude Code 等做到複核或設計時，再依團隊允許的帳號、方案與資料範圍安裝。憑證依團隊方式設定，練習一律使用假資料。",
     "skill": "你會確認 Codex 開對了資料夾。",
-    "help": "如果還沒建資料夾，先回到電腦的「文件」新增空的 ai-practice。若 Codex 說的是另一個資料夾，改開剛建立的 ai-practice，再貼一次第一句話。",
+    "help": "Ctrl + O 沒打開資料夾視窗？先確認目前是桌面 App 的 Codex 模式。也可以在左側「專案」旁按 ＋，選「本機（Local）」，把 ai-practice 加到來源資料夾，再建立專案。",
     "gear": [
       {
         "title": "Codex 耳機｜先登入，再打開資料夾",
         "steps": [
           "打開 Codex 桌面 App，用團隊允許的帳號登入。",
-          "在 Codex 開啟你剛建立的 ai-practice 空資料夾。"
+          "切到 Codex，Windows 按 Ctrl + O，Mac 按 Command + O，再選「文件」裡的 ai-practice。"
         ],
         "ready": "你已登入可使用的帳號，Codex 說的資料夾名稱也跟你剛開的一樣。",
         "url": "https://learn.chatgpt.com/docs/app",
@@ -510,7 +510,7 @@
       "打開它給的網址試一次"
     ],
     "steps": [
-      "在「文件」新增空資料夾 my-first-tool，和 ai-practice 分開。在 Codex 改開這個新資料夾。",
+      "同第 1 關，在「文件」另建空的 my-first-tool。在 Codex 按 Ctrl + O（Mac 是 Command + O），選 my-first-tool，從這個專案開新聊天。",
       "貼「在新資料夾做搜尋頁」，等 Codex 做好後，照它給的方式啟動。",
       "把 Codex 給你的本機網址貼進瀏覽器。輸入「入門」，應該看到「程式入門」；把文字清空，三筆範例會回來。",
       "把這個資料夾留著，第 12 關直接在這個搜尋頁加功能。"

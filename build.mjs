@@ -123,7 +123,7 @@ const welcome = '<section class="card welcome" id="welcome"><div><h1 tabindex="-
 const footer = '<footer><p>完成紀錄存在目前的瀏覽器。換裝置或清除瀏覽資料後，可以從第 1 關再練一次。</p>' +
   '<a href="https://github.com/Kevin-Yeh-egroup/ai-development-handbook">教材 GitHub repo</a>' +
   '<details><summary>工具的官方說明</summary><ul>' +
-  '<li><a href="https://learn.chatgpt.com/docs/app">Codex 桌面 App</a></li>' +
+  '<li><a href="https://learn.chatgpt.com/docs/app">Codex 桌面 App</a></li><li><a href="https://learn.chatgpt.com/docs/app/commands">開啟資料夾的快捷鍵</a></li>' +
   '<li><a href="https://learn.chatgpt.com/docs/agent-configuration/agents-md">AGENTS.md</a></li>' +
   '<li><a href="https://code.claude.com/docs/en/quickstart">Claude Code 入門</a></li>' +
   '<li><a href="https://docs.github.com/en/pull-requests/get-started/pull-request-quickstart">GitHub 審查流程</a></li>' +
