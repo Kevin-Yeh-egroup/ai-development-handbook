@@ -74,6 +74,10 @@ const capstoneCheck = '<fieldset class="gear-checks"><legend>我的功能做到�
 
 function lessonMarkup(lesson, index) {
   const last = index === lessons.length - 1;
+  const steps = '<details' + (lesson.showSteps ? ' open' : '') + '><summary>' +
+    (lesson.showSteps ? '照這個順序做' : '想看更細的步驟？') + '</summary>' +
+    list(lesson.steps, 'instructions') + '</details>';
+  const optional = lesson.prompts.filter(prompt => prompt.optional);
   const milestone = lesson.milestone;
   const recap = milestone ? '<section class="recap"><h3>' + esc(milestone.title) + '</h3><p>打完這一段，你現在可以：</p>' +
     list(milestone.skills, 'instructions') + '<p>' + esc(milestone.next) + '</p></section>' : '';
@@ -84,8 +88,10 @@ function lessonMarkup(lesson, index) {
     ' 關 / ' + lessons.length + ' · ' + esc(lesson.group) + '</span><h2 tabindex="-1">' + esc(lesson.title) +
     '</h2>' + gameScene(index, Boolean(milestone)) + '<p><strong>' + (milestone ? '大魔王 · ' : '小魔王 · ') + esc(lesson.boss) + '</strong>　' + esc(lesson.mission) + '</p>' +
     '<button type="button" class="term-link" data-glossary-open="' + esc(lesson.lookup) + '">查小字典 · ' + esc(lesson.lookup) + '</button><p>' + esc(lesson.intro) + '</p>' +
-    list(lesson.diagram, 'diagram') + gearMarkup(lesson.gear) + lesson.prompts.map(promptMarkup).join('') +
-    '<details><summary>想看更細的步驟？</summary>' + list(lesson.steps, 'instructions') + '</details>' +
+    list(lesson.diagram, 'diagram') + (lesson.showSteps ? steps : '') + gearMarkup(lesson.gear) +
+    lesson.prompts.filter(prompt => !prompt.optional).map(promptMarkup).join('') +
+    (optional.length ? '<details><summary>其他指令與範本</summary>' + optional.map(promptMarkup).join('') + '</details>' : '') +
+    (lesson.showSteps ? '' : steps) +
     (lesson.coach ? '<details><summary>團隊流程與補充</summary><p>' + esc(lesson.coach) + '</p></details>' : '') +
     '<div class="result"><h3>做到這裡，就可以往下</h3><p>' + esc(lesson.pass) + '</p></div>' + (index === 0 ? outfit : last ? capstoneCheck : '') +
     '<div class="row"><button type="button" class="btn" data-action="complete">我做到了</button>' +
@@ -112,7 +118,7 @@ const cards = lessons.map(lessonMarkup).join('');
 const welcome = '<section class="card welcome" id="welcome"><div><h1 tabindex="-1">做一個你想用的功能</h1>' +
   '<p>想讓搜尋更好用，或加一個常用的按鈕？跟著這 12 關，把點子說給 AI 聽，做出一個可以親手試的小版本。</p>' +
   list(['說清楚想改什麼', '用 AI 做出一小版', '親手測試', '交給團隊審查'], 'route-line') +
-  '<p>先用練習資料做一次。最後帶上你自己的點子，和 Kevin 及隊友一起看怎麼加進團隊系統。</p>' +
+  '<p>用電腦開啟 Codex，就可以先從空資料夾練習。最後帶上你自己的點子，和 Kevin 及隊友一起看怎麼加進團隊系統。</p>' +
   '<button type="button" class="btn" id="start">開始第 1 關</button></div>' + gameScene(1, true) + '</section>';
 const footer = '<footer><p>完成紀錄存在目前的瀏覽器。換裝置或清除瀏覽資料後，可以從第 1 關再練一次。</p>' +
   '<a href="https://github.com/Kevin-Yeh-egroup/ai-development-handbook">教材 GitHub repo</a>' +
