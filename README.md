@@ -19,3 +19,5 @@
 4. 將教材來源及產出的 `site/` 提交到這個 repo。要更新 Kevin 的網站，將 `site/` **內容**同步到網站 repo 的 `public/ai-development-handbook/`，再依網站的既有流程提交／發布。推送這個教材 repo 本身只會更新教材原始碼。
 
 `site/handbook.html` 可以單檔離線分享。`design.html` 是第一版 Claude Code 的視覺設計稿。闖關版的樣式和操作分別在 `course.css` 與 `course.js`。
+
+操作截圖來源在 `screenshots/`，各關對應、圖上標號、替代文字和來源說明在 `walkthrough.json`。網站版會將圖輸出到 `site/screenshots/`，單檔離線版會把圖內嵌。

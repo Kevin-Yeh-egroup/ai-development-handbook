@@ -145,3 +145,14 @@ footer { color:var(--muted); padding-top:14px }
 }
 @media (prefers-reduced-motion:reduce) { .game-scene * { transition:none !important } }
 @media print { .game-scene,.gear-checks { display:none !important } }
+.walkthrough-shot { margin:14px 0; padding:12px 0; border-block-start:1px solid var(--line) }
+.walkthrough-shot h3 { margin-block-start:0 }
+.shot-frame { position:relative; width:min(100%,var(--shot-width)); line-height:0 }
+.shot-frame img { display:block; width:100%; height:auto; border:1px solid var(--line); border-radius:8px }
+.shot-point {
+  position:absolute; display:grid; place-items:center; width:24px; height:24px; transform:translate(-50%,-50%);
+  border:2px solid #fff; border-radius:50%; background:var(--sea-dark); color:#fff; font-weight:800; font-size:14px; line-height:1;
+}
+.shot-source { color:var(--muted); font-size:.9rem }
+.shot-source a { display:inline-flex; align-items:center; min-height:44px }
+@media print { .walkthrough-shot { break-inside:avoid } }

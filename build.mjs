@@ -1,5 +1,6 @@
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { glossaryMarkup } from './glossary.mjs';
+import { loadWalkthrough } from './walkthrough.mjs';
 
 const read = name => readFile(new URL(name, import.meta.url), 'utf8');
 const [source, css, script] = await Promise.all([read('lessons.json'), read('course.css'), read('course.js')]);
@@ -27,6 +28,7 @@ for (const lesson of lessons) {
   }
 }
 
+const walkthrough = await loadWalkthrough(slugs);
 const esc = value => String(value).replace(/[&<>"']/g, char =>
   ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 const list = (items, className) => '<ol class="' + className + '">' +
@@ -72,7 +74,7 @@ const capstoneCheck = '<fieldset class="gear-checks"><legend>我的功能做到�
   '<label><input type="checkbox" data-self-check>我做出一個可以打開試的小版本</label>' +
   '<label><input type="checkbox" data-self-check>我親手試過，留下隊友能再試一次的步驟和結果</label></fieldset>';
 
-function lessonMarkup(lesson, index) {
+function lessonMarkup(lesson, index, offline) {
   const last = index === lessons.length - 1;
   const steps = '<details' + (lesson.showSteps ? ' open' : '') + '><summary>' +
     (lesson.showSteps ? '照這個順序做' : '想看更細的步驟？') + '</summary>' +
@@ -88,7 +90,7 @@ function lessonMarkup(lesson, index) {
     ' 關 / ' + lessons.length + ' · ' + esc(lesson.group) + '</span><h2 tabindex="-1">' + esc(lesson.title) +
     '</h2>' + gameScene(index, Boolean(milestone)) + '<p><strong>' + (milestone ? '大魔王 · ' : '小魔王 · ') + esc(lesson.boss) + '</strong>　' + esc(lesson.mission) + '</p>' +
     '<button type="button" class="term-link" data-glossary-open="' + esc(lesson.lookup) + '">查小字典 · ' + esc(lesson.lookup) + '</button><p>' + esc(lesson.intro) + '</p>' +
-    list(lesson.diagram, 'diagram') + (lesson.showSteps ? steps : '') + gearMarkup(lesson.gear) +
+    list(lesson.diagram, 'diagram') + (lesson.showSteps ? steps : '') + walkthrough.markup(lesson.slug, offline) + gearMarkup(lesson.gear) +
     lesson.prompts.filter(prompt => !prompt.optional).map(promptMarkup).join('') +
     (optional.length ? '<details><summary>其他指令與範本</summary>' + optional.map(promptMarkup).join('') + '</details>' : '') +
     (lesson.showSteps ? '' : steps) +
@@ -114,7 +116,8 @@ const map = '<details class="map-panel"><summary>看四段闖關路線</summary>
         ' 關' + (lesson.milestone ? ' · 大魔王' : '') + '</span>' + esc(lesson.title) + '</button></li>'
       ).join('') + '</ol></section>';
   }).join('') + '</details>';
-const cards = lessons.map(lessonMarkup).join('');
+const onlineCards = lessons.map((lesson, index) => lessonMarkup(lesson, index, false)).join('');
+const offlineCards = lessons.map((lesson, index) => lessonMarkup(lesson, index, true)).join('');
 const welcome = '<section class="card welcome" id="welcome"><div><h1 tabindex="-1">做一個你想用的功能</h1>' +
   '<p>想讓搜尋更好用，或加一個常用的按鈕？跟著這 12 關，把點子說給 AI 聽，做出一個可以親手試的小版本。</p>' +
   list(['說清楚想改什麼', '用 AI 做出一小版', '親手測試', '交給團隊審查'], 'route-line') +
@@ -140,13 +143,14 @@ function render({ entry = '', offline = false } = {}) {
     '<main id="main" tabindex="-1">' + welcome + glossary +
     '<div class="row progress"><div class="progress-track" id="progress" role="progressbar" aria-label="完成關卡數" ' +
     'aria-valuemin="0" aria-valuemax="' + lessons.length + '" aria-valuenow="0"><i></i></div><b id="count"></b></div>' +
-    map + cards + '</main><p class="sr" role="status" id="live"></p>' +
+    map + (offline ? offlineCards : onlineCards) + '</main><p class="sr" role="status" id="live"></p>' +
     '<noscript><p>啟用 JavaScript 後就能逐關完成並保存進度。下方仍可閱讀所有課程。</p>' +
     '<style>main article[data-lesson][hidden]{display:block!important}button,.reward{display:none!important}</style></noscript>' +
     footer + '</div><script>\n' + script + glossaryScript + '</script></body></html>\n';
 }
 
 await mkdir(output, { recursive: true });
+await walkthrough.copyImages(output);
 await Promise.all([
   writeFile(new URL('index.html', output), render()),
   writeFile(new URL('handbook.html', output), render({ offline: true })),

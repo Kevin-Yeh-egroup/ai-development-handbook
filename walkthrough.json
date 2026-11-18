@@ -1,0 +1,411 @@
+{
+  "shots": {
+    "codex-project-plus": {
+      "width": 230,
+      "height": 144,
+      "source": "codex",
+      "title": "從左邊的「專案＋」開始",
+      "alt": "官方練習畫面的 Codex 側欄，Projects 右邊有一個＋。",
+      "points": [
+        {
+          "x": 74,
+          "y": 67,
+          "label": "找到「專案／Projects」，按它右邊的 ＋。"
+        }
+      ],
+      "result": "會跳出「建立專案／Create project」視窗。"
+    },
+    "codex-project-local": {
+      "width": 655,
+      "height": 329,
+      "source": "codex",
+      "title": "選本機，再按下一步",
+      "alt": "建立專案視窗，Local 已選取，右下角有 Next。",
+      "points": [
+        {
+          "x": 40,
+          "y": 41,
+          "label": "選「本機／Local」，這樣 Codex 才能用你電腦上的資料夾。"
+        },
+        {
+          "x": 87,
+          "y": 92,
+          "label": "按右下角「下一步／Next」。"
+        }
+      ],
+      "result": "下一頁會出現專案名稱和來源資料夾。"
+    },
+    "codex-project-add-folder": {
+      "width": 510,
+      "height": 310,
+      "source": "codex",
+      "title": "把空的 ai-practice 加進去",
+      "alt": "建立專案表單，名稱是 ai-practice，下方有加入來源資料夾的區域。",
+      "points": [
+        {
+          "x": 42,
+          "y": 27,
+          "label": "上方專案名稱填 ai-practice。"
+        },
+        {
+          "x": 48,
+          "y": 60,
+          "label": "按「加入資料夾／Add folders」。視窗跳出後，進到「文件」，選剛建的 ai-practice，再按「選取資料夾」或「開啟」。"
+        }
+      ],
+      "result": "回到 Codex 後，來源資料夾會多出一筆。"
+    },
+    "codex-project-source": {
+      "width": 510,
+      "height": 310,
+      "source": "codex",
+      "title": "核對來源資料夾，再建立專案",
+      "alt": "來源資料夾清單有官方練習使用的 Blossom Bank，右下角是 Create project。",
+      "points": [
+        {
+          "x": 38,
+          "y": 54,
+          "label": "看「來源資料夾／Source folders」。圖裡是官方範例 Blossom Bank，你要看到的是 ai-practice。"
+        },
+        {
+          "x": 67,
+          "y": 90,
+          "label": "確認後按「建立專案／Create project」。"
+        }
+      ],
+      "result": "左側的「專案」清單會出現 ai-practice。"
+    },
+    "codex-project-sidebar": {
+      "width": 210,
+      "height": 62,
+      "source": "codex",
+      "title": "建立後，在左側找 ai-practice",
+      "alt": "Codex 的 Projects 底下顯示新建的 ai-practice 專案。",
+      "points": [
+        {
+          "x": 61,
+          "y": 72,
+          "label": "確認左側顯示 ai-practice。若畫面還在另一個聊天，從 ai-practice 開新聊天。"
+        }
+      ],
+      "result": "新聊天的輸入框附近會顯示所屬的資料夾。"
+    },
+    "codex-chat-paste": {
+      "width": 633,
+      "height": 121,
+      "source": "codex",
+      "title": "貼在底下的聊天輸入框",
+      "alt": "聊天輸入框上方顯示 ai-practice 和 Local，裡面已貼入一句檢查資料夾的訊息，右下有送出箭頭。",
+      "points": [
+        {
+          "x": 18,
+          "y": 19,
+          "label": "先看輸入框上方是否顯示 ai-practice。"
+        },
+        {
+          "x": 53,
+          "y": 54,
+          "label": "把本關複製的文字貼到框裡。"
+        },
+        {
+          "x": 91,
+          "y": 81,
+          "label": "按右下角的送出箭頭。"
+        }
+      ],
+      "result": "送出後，等 Codex 回覆目前的資料夾。回覆的路徑末尾應該是 ai-practice。"
+    },
+    "tools-ready": {
+      "width": 680,
+      "height": 251,
+      "source": "output",
+      "title": "看到兩個版本號，再開始",
+      "alt": "Git 和 Node.js 的實際版本檢查，各有一行版本號。",
+      "points": [
+        {
+          "x": 49,
+          "y": 49,
+          "label": "Git 會回覆 git version 和版本號。"
+        },
+        {
+          "x": 24,
+          "y": 82,
+          "label": "Node.js 會回覆 v 開頭的版本號。"
+        }
+      ],
+      "result": "你的數字可能和圖不同。只要兩個工具都有回覆，就可以貼下一段指令。"
+    },
+    "test-before": {
+      "width": 680,
+      "height": 266,
+      "source": "output",
+      "title": "一個通過、一個失敗",
+      "alt": "實測的搜尋輸出：一般輸入通過，前後有空白的輸入失敗，合計通過和失敗各一。",
+      "points": [
+        {
+          "x": 41,
+          "y": 46,
+          "label": "ok 1 是一般搜尋成功。"
+        },
+        {
+          "x": 42,
+          "y": 59,
+          "label": "not ok 2 是帶空白的搜尋失敗。"
+        }
+      ],
+      "result": "這一關成功重現了問題。到第 6 關再修。"
+    },
+    "issue-draft": {
+      "width": 680,
+      "height": 234,
+      "source": "draft",
+      "title": "工單寫到隊友能照著做",
+      "alt": "LOCAL-1 工單草稿列出重做方式、目前畫面和預期結果。",
+      "points": [
+        {
+          "x": 57,
+          "y": 53,
+          "label": "先寫要輸入什麼。"
+        },
+        {
+          "x": 57,
+          "y": 75,
+          "label": "把實際和預期的結果各寫一行。"
+        }
+      ],
+      "result": "拿草稿從頭照做一次，就能確認寫得清不清楚。"
+    },
+    "git-branch": {
+      "width": 680,
+      "height": 251,
+      "source": "output",
+      "title": "核對自己在哪條分支",
+      "alt": "實跑輸出顯示目前分支是 issue/local-1-trim-query，未存進版本的測試檔仍在。",
+      "points": [
+        {
+          "x": 54,
+          "y": 49,
+          "label": "看第一段回報的分支名稱。"
+        },
+        {
+          "x": 45,
+          "y": 83,
+          "label": "下面出現 search.test.cjs，代表測試檔還在。"
+        }
+      ],
+      "result": "名稱和圖裡相同，才接著在這個分支修搜尋。"
+    },
+    "test-after": {
+      "width": 680,
+      "height": 266,
+      "source": "output",
+      "title": "用原本的測試再跑一次",
+      "alt": "實跑輸出顯示一般搜尋與前後帶空白的搜尋都通過，失敗數是零。",
+      "points": [
+        {
+          "x": 42,
+          "y": 60,
+          "label": "前後有空白這一項也變成 ok。"
+        },
+        {
+          "x": 28,
+          "y": 83,
+          "label": "最下面的 fail 是 0。"
+        }
+      ],
+      "result": "兩種輸入應該都找得到同一門課。"
+    },
+    "git-commit": {
+      "width": 680,
+      "height": 283,
+      "source": "output",
+      "title": "存好後，找得到這一版",
+      "alt": "本機 Git 上一筆版本紀錄有短代號，下方列出 search.cjs 和 search.test.cjs。",
+      "points": [
+        {
+          "x": 67,
+          "y": 43,
+          "label": "這一行開頭是版本代號。"
+        },
+        {
+          "x": 40,
+          "y": 81,
+          "label": "下面是這一版包含的檔案。"
+        }
+      ],
+      "result": "把版本代號和測試結果留在聊天，下一關會用到。"
+    },
+    "pr-draft": {
+      "width": 680,
+      "height": 234,
+      "source": "draft",
+      "title": "先在聊天裡整理審查草稿",
+      "alt": "LOCAL-1 審查草稿含版本、測試結果與尚未建立 GitHub 工單或審查頁的狀態。",
+      "points": [
+        {
+          "x": 59,
+          "y": 66,
+          "label": "寫清楚你拿哪兩種輸入測過。"
+        },
+        {
+          "x": 63,
+          "y": 80,
+          "label": "本機練習，狀態寫「尚未建立」，網址留待補。"
+        }
+      ],
+      "result": "草稿有改動、測試結果和狀態，就可以交給搭檔看。"
+    },
+    "it-draft": {
+      "width": 680,
+      "height": 201,
+      "source": "draft",
+      "title": "寫一句隊友能回答的問題",
+      "alt": "通知草稿用搜尋框留空時的預期行為做為審查問題，並說明審查頁尚未建立。",
+      "points": [
+        {
+          "x": 76,
+          "y": 61,
+          "label": "問一個具體的問題，例如搜尋框留空要看到什麼。"
+        }
+      ],
+      "result": "本機練習把草稿留在聊天。如果有真的審查頁，再補上連結。"
+    },
+    "benchmark": {
+      "width": 680,
+      "height": 234,
+      "source": "output",
+      "title": "用同一個方法量前後",
+      "alt": "本機量測用十萬筆假資料，列出修改前後兩個中位數，搜尋結果相同。",
+      "points": [
+        {
+          "x": 55,
+          "y": 59,
+          "label": "用同一份資料，比較修改前後的數字。"
+        },
+        {
+          "x": 39,
+          "y": 80,
+          "label": "也要確認搜尋結果還是一樣。"
+        }
+      ],
+      "result": "你的時間可能和圖不同。差異不明顯時，保留原本的版本也可以。"
+    },
+    "search-browser": {
+      "width": 540,
+      "height": 312,
+      "source": "browser",
+      "title": "打開自己的網頁，試搜一次",
+      "alt": "本機課程搜尋頁輸入「入門」後，結果顯示程式入門。",
+      "points": [
+        {
+          "x": 77,
+          "y": 43,
+          "label": "把 Codex 回報的本機網址貼到瀏覽器，再在搜尋框打「入門」。"
+        },
+        {
+          "x": 22,
+          "y": 60,
+          "label": "按「搜尋」。"
+        }
+      ],
+      "result": "下面會看到「程式入門」。"
+    },
+    "feature-before-clear": {
+      "width": 540,
+      "height": 312,
+      "source": "browser",
+      "title": "改好後，試按「清除搜尋」",
+      "alt": "本機課程搜尋頁有新加的清除搜尋按鈕，當時搜尋框有字，只有一筆結果。",
+      "points": [
+        {
+          "x": 43,
+          "y": 60,
+          "label": "先搜尋「入門」，再按新加的「清除搜尋」。"
+        }
+      ],
+      "result": "按下後，搜尋框會清空，三筆課程會回來。可以對照下一張圖。"
+    },
+    "feature-cleared": {
+      "width": 540,
+      "height": 345,
+      "source": "browser",
+      "title": "搜尋框清空，三筆課程回來",
+      "alt": "點下清除搜尋後，輸入框空白，顯示程式入門、進階程式、設計練習三筆。",
+      "points": [
+        {
+          "x": 77,
+          "y": 39,
+          "label": "搜尋框沒有字。"
+        },
+        {
+          "x": 46,
+          "y": 78,
+          "label": "三筆課程都回來了。"
+        }
+      ],
+      "result": "如果這是工單裡約好的結果，這一版就可以整理給搭檔。"
+    },
+    "github-compare": {
+      "width": 428,
+      "height": 111,
+      "source": "github",
+      "title": "有授權才用 GitHub 的送審入口",
+      "alt": "GitHub 官方截圖的黃色提示列，右側是 Compare & pull request 按鈕。",
+      "points": [
+        {
+          "x": 12,
+          "y": 49,
+          "label": "在授權的練習專案推送後，若看到提示列，按 Compare & pull request。"
+        }
+      ],
+      "result": "會開啟比較分支的頁面。先核對來源和目標分支、貼上草稿，再依團隊約定選擇建立 Draft PR。"
+    }
+  },
+  "lessons": {
+    "setup": [
+      "codex-project-plus",
+      "codex-project-local",
+      "codex-project-add-folder",
+      "codex-project-source",
+      "codex-project-sidebar",
+      "codex-chat-paste"
+    ],
+    "codex-standing-prompt": [
+      "codex-chat-paste"
+    ],
+    "offline-search-practice": [
+      "tools-ready",
+      "test-before"
+    ],
+    "issue": [
+      "issue-draft"
+    ],
+    "branch": [
+      "git-branch"
+    ],
+    "change-and-fix-bug": [
+      "test-before",
+      "test-after"
+    ],
+    "verify-and-commit": [
+      "git-commit"
+    ],
+    "draft-pr": [
+      "pr-draft",
+      "github-compare"
+    ],
+    "notify-it": [
+      "it-draft"
+    ],
+    "optimize": [
+      "benchmark"
+    ],
+    "minimal-project": [
+      "search-browser"
+    ],
+    "agent-handoff": [
+      "feature-before-clear",
+      "feature-cleared"
+    ]
+  }
+}
