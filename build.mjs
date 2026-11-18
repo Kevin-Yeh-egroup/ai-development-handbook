@@ -75,12 +75,16 @@ function gearMarkup(lesson) {
         '</p>' + promptMarkup(item.install) : '') + '</section>').join('') + '</details>';
 }
 
-function gameScene(index, milestone = false) {
+function gameScene(index, milestone = false, fireworks = null) {
   const shade = ['leaf-boss', 'pond-boss', 'sun-boss'][index % 3];
-  return '<div class="stage game-scene" aria-hidden="true"><div class="hero-c"><div class="hair"></div>' +
+  const completion = fireworks !== null;
+  return '<div class="stage game-scene' + (completion ? ' completion-scene' : '') + '" aria-hidden="true">' +
+    (completion ? '<span class="stage-badge">等你完成這一步</span>' : '') +
+    '<div class="hero-c"><div class="hair"></div>' +
     '<div class="hd"></div><div class="bd"></div><span class="ear l"></span><span class="ear r"></span>' +
     '<span class="keyb"></span></div><div class="boss ' + shade + (milestone ? ' crowned' : '') +
-    '"><i></i>' + (milestone ? '<span class="crown"></span>' : '') + '</div></div>';
+    '"><i></i>' + (milestone ? '<span class="crown"></span>' : '') + '</div>' +
+    (completion ? '<div class="scene-reward">' + sprout(milestone) + '</div>' + fireworks : '') + '</div>';
 }
 
 const outfit = '<fieldset class="gear-checks"><legend>把兩件裝備穿上</legend>' +
@@ -101,8 +105,10 @@ function lessonMarkup(lesson, index, offline) {
       (extra.length ? '<details><summary>其他指令與範本</summary>' + extra.map(promptMarkup).join('') + '</details>' : '');
   };
   const milestone = lesson.milestone;
-  const recap = milestone ? '<section class="recap"><h3>' + esc(milestone.title) + '</h3><p>打完這一段，你現在可以：</p>' +
-    list(milestone.skills, 'instructions') + '<p>' + esc(milestone.next) + '</p></section>' : '';
+  const recap = milestone ? '<section class="recap" hidden><h3>' + esc(milestone.title) + '</h3><p>打完這一段，你現在可以：</p>' +
+    list(milestone.skills, 'instructions') + '<p>' + esc(milestone.next) + '</p>' +
+    (last ? '<p>把工單草稿、修改前後的畫面與測試結果交給 Kevin，和團隊確認怎麼審查並加進正式系統。</p>' : '') +
+    '</section>' : '';
   const fireworks = milestone ? '<div class="fireworks" aria-hidden="true">' +
     ['★','✦','★','✦','★'].map((star, i) => '<span style="--i:' + i + '">' + star + '</span>').join('') +
     '</div>' : '';
@@ -110,19 +116,20 @@ function lessonMarkup(lesson, index, offline) {
     ' 關 / ' + lessons.length + ' · ' + esc(lesson.group) + '</span><h2 tabindex="-1">' + esc(lesson.title) +
     '</h2><p class="lesson-goal"><strong>這關要做到</strong>　' + esc(lesson.goal) + '</p><p>' + esc(lesson.intro) + '</p>' +
     '<p class="lesson-boss"><strong>' + (milestone ? '大魔王 · ' : '小魔王 · ') + esc(lesson.boss) + '</strong></p>' +
-    gameScene(index, Boolean(milestone)) +
     '<button type="button" class="term-link" data-glossary-open="' + esc(lesson.lookup) + '">查小字典 · ' + esc(lesson.lookup) + '</button>' +
     walkthrough.markup(lesson, offline, promptsAtStep) +
     (lesson.coach ? '<details><summary>團隊流程與補充</summary><p>' + esc(lesson.coach) + '</p></details>' : '') +
-    '<div class="result"><h3>回教材，確認你做到了</h3><p>' + esc(lesson.pass) + '</p></div>' + (index === 0 ? outfit : last ? capstoneCheck : '') +
+    '<section class="lesson-completion" tabindex="-1" aria-labelledby="completion-' + lesson.slug + '">' +
+    '<h3 id="completion-' + lesson.slug + '">這關的完成區</h3>' +
+    gameScene(index, Boolean(milestone), fireworks) +
+    '<div class="completion-panel"><div class="completion-check"><div class="result"><h3>回教材，確認你做到了</h3><p>' + esc(lesson.pass) + '</p></div>' + (index === 0 ? outfit : last ? capstoneCheck : '') +
     '<div class="row"><button type="button" class="btn" data-action="complete">我做到了</button>' +
     '<button type="button" class="btn alt" data-action="help">我還沒做到</button></div>' +
-    '<p class="recovery" hidden>' + esc(lesson.help) + '</p>' +
-    '<div class="reward row' + (milestone ? ' milestone' : '') + '" hidden>' + fireworks + sprout(Boolean(milestone)) +
-    '<div class="reward-copy"><h3 tabindex="-1">' + (last ? '12 關完成！' : milestone ? '大魔王退場！' : '你練會了這一步') + '</h3><p>' +
-    esc(lesson.skill) + '</p>' + recap + (last ? '<p>想把自己的點子加進團隊系統？把工單草稿、修改前後的畫面與測試結果交給 Kevin，和團隊確認怎麼審查與合併。</p>' : '') +
-    '</div><button type="button" class="btn reward-next" data-action="next">' +
-    (last ? '回到闖關首頁' : '前往第 ' + (index + 2) + ' 關') + '</button></div></article>';
+    '<p class="recovery" hidden>' + esc(lesson.help) + '</p></div>' +
+    '<div class="reward' + (milestone ? ' milestone' : '') + '" hidden>' +
+    '<h3>' + (last ? '12 關完成！' : milestone ? '大魔王退場！' : '你練會了這一步') + '</h3><p>' +
+    esc(lesson.skill) + '</p><button type="button" class="btn reward-next" data-action="next">' +
+    (last ? '回到闖關首頁' : '前往第 ' + (index + 2) + ' 關') + '</button></div></div>' + recap + '</section></article>';
 }
 
 const map = '<details class="map-panel"><summary>看四段闖關路線</summary>' +

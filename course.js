@@ -60,13 +60,18 @@
       item.disabled = learned;
     }
     confirm.disabled = learned || items.some(item => !item.checked);
-    card.querySelector('.boss').classList.toggle('beat', learned);
+    const scene = card.querySelector('.completion-scene');
+    scene.classList.toggle('is-complete', learned);
+    scene.classList.toggle('celebrate', celebrate);
+    scene.querySelector('.boss').classList.toggle('beat', learned);
+    scene.querySelector('.stage-badge').textContent = learned ?
+      (card.querySelector('.milestone') ? '大魔王退場，星光出現' : '小魔王退場，小芽長出來了') :
+      '等你完成這一步';
     paintOutfit();
-    confirm.textContent = learned ? '已確認 ✓' : '我做到了';
-    card.querySelector('[data-action=help]').hidden = learned;
-    const reward = card.querySelector('.reward');
-    reward.hidden = !learned;
-    reward.classList.toggle('celebrate', celebrate);
+    card.querySelector('.completion-check').hidden = learned;
+    card.querySelector('.reward').hidden = !learned;
+    const recap = card.querySelector('.recap');
+    if (recap) recap.hidden = !learned;
   }
 
   function show(index, { focus = false, historyMode = 'none' } = {}) {
@@ -168,8 +173,9 @@
       card.querySelector('.recovery').hidden = true;
       renderProgress();
       renderLesson(card, true);
-      const reward = card.querySelector('.reward');
-      (reward.matches('.milestone') ? reward.querySelector('h3') : reward.querySelector('button')).focus();
+      const completion = card.querySelector('.lesson-completion');
+      completion.focus({ preventScroll: true });
+      completion.scrollIntoView({ block: 'start', behavior: 'instant' });
       report('第 ' + (active + 1) + ' 關完成。' +
         (saved ? '' : '目前瀏覽器無法保存進度，這次仍可繼續。'));
     } else if (button.dataset.action === 'next' && active !== null) {
