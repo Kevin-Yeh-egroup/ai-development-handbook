@@ -156,3 +156,20 @@ footer { color:var(--muted); padding-top:14px }
 .shot-source { color:var(--muted); font-size:.9rem }
 .shot-source a { display:inline-flex; align-items:center; min-height:44px }
 @media print { .walkthrough-shot { break-inside:avoid } }
+.lesson-steps { padding-inline-start:1.45em }
+.lesson-steps > li { padding-block:8px; margin-block:12px }
+.lesson-steps .walkthrough-shot { margin:9px 0 16px; padding:12px; background:#fffdf8; border:1px solid var(--line); border-radius:12px }
+.lesson-steps .walkthrough-shot:last-child { margin-bottom:0 }
+.lesson-steps figcaption h3 { color:var(--sea-dark) }
+.shot-open { display:block; width:min(100%,var(--shot-width)); max-width:100%; min-height:44px; padding:0; border:0; background:none; color:var(--sea-dark); text-align:start; cursor:zoom-in }
+.shot-open .shot-frame { display:block; width:100% }
+.shot-open-label { display:inline-block; text-decoration:underline; margin-top:4px }
+.shot-viewer { width:min(96vw,1040px); max-width:96vw; max-height:94vh; max-height:94dvh; padding:14px; border:1px solid var(--line); border-radius:15px; background:#fcfbf7; color:var(--ink) }
+.shot-viewer::backdrop { background:#18302bd9 }
+.shot-viewer-header { display:flex; align-items:center; justify-content:space-between; gap:8px 12px }
+.shot-viewer-header h2 { font-size:1.15rem; margin:0 }
+.shot-viewer-header form { flex:none }
+.shot-viewer-canvas { overflow:auto; max-height:73vh; max-height:73dvh }
+.shot-viewer-canvas .shot-frame { display:block; width:max(100%,var(--shot-width)); max-width:none }
+.shot-viewer-hint { margin:7px 0 0; color:var(--muted) }
+@media print { .shot-viewer,.shot-open-label { display:none !important } }

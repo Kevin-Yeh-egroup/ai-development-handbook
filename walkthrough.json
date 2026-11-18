@@ -363,49 +363,107 @@
   },
   "lessons": {
     "setup": [
-      "codex-project-plus",
-      "codex-project-local",
-      "codex-project-add-folder",
-      "codex-project-source",
-      "codex-project-sidebar",
-      "codex-chat-paste"
+      [],
+      [
+        "codex-project-plus"
+      ],
+      [
+        "codex-project-local"
+      ],
+      [
+        "codex-project-add-folder"
+      ],
+      [
+        "codex-project-source"
+      ],
+      [
+        "codex-project-sidebar"
+      ],
+      [
+        "codex-chat-paste"
+      ],
+      []
     ],
     "codex-standing-prompt": [
-      "codex-chat-paste"
+      [],
+      [
+        "codex-chat-paste"
+      ],
+      []
     ],
     "offline-search-practice": [
-      "tools-ready",
-      "test-before"
+      [
+        "tools-ready"
+      ],
+      [],
+      [
+        "test-before"
+      ]
     ],
     "issue": [
-      "issue-draft"
+      [
+        "issue-draft"
+      ],
+      [],
+      []
     ],
     "branch": [
-      "git-branch"
+      [],
+      [
+        "git-branch"
+      ],
+      []
     ],
     "change-and-fix-bug": [
-      "test-before",
-      "test-after"
+      [
+        "test-before"
+      ],
+      [
+        "test-after"
+      ]
     ],
     "verify-and-commit": [
-      "git-commit"
+      [],
+      [
+        "git-commit"
+      ]
     ],
     "draft-pr": [
-      "pr-draft",
-      "github-compare"
+      [
+        "pr-draft"
+      ],
+      [
+        "github-compare"
+      ]
     ],
     "notify-it": [
-      "it-draft"
+      [
+        "it-draft"
+      ],
+      []
     ],
     "optimize": [
-      "benchmark"
+      [],
+      [
+        "benchmark"
+      ],
+      []
     ],
     "minimal-project": [
-      "search-browser"
+      [],
+      [],
+      [
+        "search-browser"
+      ],
+      []
     ],
     "agent-handoff": [
-      "feature-before-clear",
-      "feature-cleared"
+      [],
+      [
+        "feature-before-clear",
+        "feature-cleared"
+      ],
+      []
     ]
   }
 }

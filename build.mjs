@@ -28,7 +28,8 @@ for (const lesson of lessons) {
   }
 }
 
-const walkthrough = await loadWalkthrough(slugs);
+const walkthrough = await loadWalkthrough(lessons);
+const shotViewerScript = await read('shot-viewer.js');
 const esc = value => String(value).replace(/[&<>"']/g, char =>
   ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 const list = (items, className) => '<ol class="' + className + '">' +
@@ -76,9 +77,6 @@ const capstoneCheck = '<fieldset class="gear-checks"><legend>我的功能做到�
 
 function lessonMarkup(lesson, index, offline) {
   const last = index === lessons.length - 1;
-  const steps = '<details' + (lesson.showSteps ? ' open' : '') + '><summary>' +
-    (lesson.showSteps ? '照這個順序做' : '想看更細的步驟？') + '</summary>' +
-    list(lesson.steps, 'instructions') + '</details>';
   const optional = lesson.prompts.filter(prompt => prompt.optional);
   const milestone = lesson.milestone;
   const recap = milestone ? '<section class="recap"><h3>' + esc(milestone.title) + '</h3><p>打完這一段，你現在可以：</p>' +
@@ -90,10 +88,10 @@ function lessonMarkup(lesson, index, offline) {
     ' 關 / ' + lessons.length + ' · ' + esc(lesson.group) + '</span><h2 tabindex="-1">' + esc(lesson.title) +
     '</h2>' + gameScene(index, Boolean(milestone)) + '<p><strong>' + (milestone ? '大魔王 · ' : '小魔王 · ') + esc(lesson.boss) + '</strong>　' + esc(lesson.mission) + '</p>' +
     '<button type="button" class="term-link" data-glossary-open="' + esc(lesson.lookup) + '">查小字典 · ' + esc(lesson.lookup) + '</button><p>' + esc(lesson.intro) + '</p>' +
-    list(lesson.diagram, 'diagram') + (lesson.showSteps ? steps : '') + walkthrough.markup(lesson.slug, offline) + gearMarkup(lesson.gear) +
+    list(lesson.diagram, 'diagram') + gearMarkup(lesson.gear) +
     lesson.prompts.filter(prompt => !prompt.optional).map(promptMarkup).join('') +
     (optional.length ? '<details><summary>其他指令與範本</summary>' + optional.map(promptMarkup).join('') + '</details>' : '') +
-    (lesson.showSteps ? '' : steps) +
+    walkthrough.markup(lesson, offline) +
     (lesson.coach ? '<details><summary>團隊流程與補充</summary><p>' + esc(lesson.coach) + '</p></details>' : '') +
     '<div class="result"><h3>做到這裡，就可以往下</h3><p>' + esc(lesson.pass) + '</p></div>' + (index === 0 ? outfit : last ? capstoneCheck : '') +
     '<div class="row"><button type="button" class="btn" data-action="complete">我做到了</button>' +
@@ -132,6 +130,12 @@ const footer = '<footer><p>完成紀錄存在目前的瀏覽器。換裝置或�
   '<li><a href="https://docs.github.com/en/pull-requests/get-started/pull-request-quickstart">GitHub 審查流程</a></li>' +
   '</ul></details></footer>';
 
+const shotViewer = '<dialog id="shot-viewer" class="shot-viewer" aria-labelledby="shot-viewer-title">' +
+  '<div class="shot-viewer-header"><h2 id="shot-viewer-title">操作截圖</h2>' +
+  '<form method="dialog"><button type="submit" class="btn alt" autofocus>關閉</button></form></div>' +
+  '<div class="shot-viewer-canvas" tabindex="0" role="region" aria-label="放大的操作截圖"></div>' +
+  '<p class="shot-viewer-hint">圖片超出畫面時，可以左右滑動。</p></dialog>';
+
 function render({ entry = '', offline = false } = {}) {
   return '<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8">' +
     '<meta name="viewport" content="width=device-width,initial-scale=1">' +
@@ -145,8 +149,8 @@ function render({ entry = '', offline = false } = {}) {
     'aria-valuemin="0" aria-valuemax="' + lessons.length + '" aria-valuenow="0"><i></i></div><b id="count"></b></div>' +
     map + (offline ? offlineCards : onlineCards) + '</main><p class="sr" role="status" id="live"></p>' +
     '<noscript><p>啟用 JavaScript 後就能逐關完成並保存進度。下方仍可閱讀所有課程。</p>' +
-    '<style>main article[data-lesson][hidden]{display:block!important}button,.reward{display:none!important}</style></noscript>' +
-    footer + '</div><script>\n' + script + glossaryScript + '</script></body></html>\n';
+    '<style>main article[data-lesson][hidden]{display:block!important}button:not(.shot-open),.shot-open-label,.reward{display:none!important}</style></noscript>' +
+    footer + '</div>' + shotViewer + '<script>\n' + script + glossaryScript + shotViewerScript + '</script></body></html>\n';
 }
 
 await mkdir(output, { recursive: true });
