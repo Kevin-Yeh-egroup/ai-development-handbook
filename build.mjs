@@ -16,11 +16,14 @@ for (const lesson of lessons) {
     throw new Error('課程網址不合法或重複：' + lesson.slug);
   }
   slugs.add(lesson.slug);
-  for (const field of ['title', 'group', 'intro', 'pass', 'skill', 'help', 'boss', 'mission', 'lookup']) {
+  for (const field of ['title', 'group', 'intro', 'pass', 'skill', 'help', 'boss', 'goal', 'lookup']) {
     if (typeof lesson[field] !== 'string' || !lesson[field].trim()) throw new Error(lesson.slug + ' 缺少 ' + field);
   }
-  for (const field of ['diagram', 'steps', 'prompts']) {
+  for (const field of ['steps', 'prompts']) {
     if (!Array.isArray(lesson[field]) || !lesson[field].length) throw new Error(lesson.slug + ' 缺少 ' + field);
+  }
+  if (lesson.gear?.length && (!Number.isInteger(lesson.gearStep) || lesson.gearStep < 1 || lesson.gearStep > lesson.steps.length)) {
+    throw new Error(lesson.slug + ' 的裝備教學需對應到操作步驟');
   }
   if (!lesson.prompts.every(item => typeof item.text === 'string' && item.text.trim() && item.label &&
       Number.isInteger(item.step) && item.step >= 1 && item.step <= lesson.steps.length) ||
@@ -55,10 +58,15 @@ function promptMarkup(prompt) {
     esc(prompt.text) + '</pre></details></div>';
 }
 
-function gearMarkup(gear) {
-  if (!gear) return '';
-  return '<details class="equipment"><summary>看準備與安裝教學</summary>' +
-    gear.map(item => '<section><h3>' + esc(item.title) + '</h3>' +
+function gearMarkup(lesson) {
+  const labels = {
+    setup: '還沒登入？看 Codex 設定教學',
+    'offline-search-practice': '缺工具？看 Git 與 Node.js 安裝教學',
+    'draft-pr': '要練送出？看 GitHub 註冊與登入',
+    'agent-handoff': '想請 Claude 幫忙看？看安裝與登入'
+  };
+  return '<details class="equipment"><summary>' + esc(labels[lesson.slug]) + '</summary>' +
+    lesson.gear.map(item => '<section><h3>' + esc(item.title) + '</h3>' +
       '<p><strong>為什麼要準備？</strong> ' + esc(item.why) + '</p>' +
       '<p><strong>哪一關會用到？</strong> ' + esc(item.when) + '</p>' +
       list(item.steps, 'instructions') + '<p><strong>怎麼知道準備好了？</strong> ' +
@@ -88,7 +96,8 @@ function lessonMarkup(lesson, index, offline) {
   const promptsAtStep = step => {
     const prompts = lesson.prompts.filter(prompt => prompt.step === step);
     const extra = prompts.filter(prompt => prompt.optional);
-    return prompts.filter(prompt => !prompt.optional).map(promptMarkup).join('') +
+    return (lesson.gear?.length && lesson.gearStep === step ? gearMarkup(lesson) : '') +
+      prompts.filter(prompt => !prompt.optional).map(promptMarkup).join('') +
       (extra.length ? '<details><summary>其他指令與範本</summary>' + extra.map(promptMarkup).join('') + '</details>' : '');
   };
   const milestone = lesson.milestone;
@@ -99,12 +108,13 @@ function lessonMarkup(lesson, index, offline) {
     '</div>' : '';
   return '<article class="card" id="' + lesson.slug + '" data-lesson hidden><span class="tag">第 ' + (index + 1) +
     ' 關 / ' + lessons.length + ' · ' + esc(lesson.group) + '</span><h2 tabindex="-1">' + esc(lesson.title) +
-    '</h2>' + gameScene(index, Boolean(milestone)) + '<p><strong>' + (milestone ? '大魔王 · ' : '小魔王 · ') + esc(lesson.boss) + '</strong>　' + esc(lesson.mission) + '</p>' +
-    '<button type="button" class="term-link" data-glossary-open="' + esc(lesson.lookup) + '">查小字典 · ' + esc(lesson.lookup) + '</button><p>' + esc(lesson.intro) + '</p>' +
-    list(lesson.diagram, 'diagram') + gearMarkup(lesson.gear) +
+    '</h2><p class="lesson-goal"><strong>這關要做到</strong>　' + esc(lesson.goal) + '</p><p>' + esc(lesson.intro) + '</p>' +
+    '<p class="lesson-boss"><strong>' + (milestone ? '大魔王 · ' : '小魔王 · ') + esc(lesson.boss) + '</strong></p>' +
+    gameScene(index, Boolean(milestone)) +
+    '<button type="button" class="term-link" data-glossary-open="' + esc(lesson.lookup) + '">查小字典 · ' + esc(lesson.lookup) + '</button>' +
     walkthrough.markup(lesson, offline, promptsAtStep) +
     (lesson.coach ? '<details><summary>團隊流程與補充</summary><p>' + esc(lesson.coach) + '</p></details>' : '') +
-    '<div class="result"><h3>做到這裡，就可以往下</h3><p>' + esc(lesson.pass) + '</p></div>' + (index === 0 ? outfit : last ? capstoneCheck : '') +
+    '<div class="result"><h3>回教材，確認你做到了</h3><p>' + esc(lesson.pass) + '</p></div>' + (index === 0 ? outfit : last ? capstoneCheck : '') +
     '<div class="row"><button type="button" class="btn" data-action="complete">我做到了</button>' +
     '<button type="button" class="btn alt" data-action="help">我還沒做到</button></div>' +
     '<p class="recovery" hidden>' + esc(lesson.help) + '</p>' +

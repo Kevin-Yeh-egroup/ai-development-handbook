@@ -39,10 +39,10 @@ summary { cursor:pointer; font-weight:700; min-height:44px; align-content:center
 .map button[aria-current=true] { border:2px solid var(--sea) }
 .map button[aria-disabled=true] { border-style:dashed; color:var(--muted); cursor:not-allowed }
 .map button[data-done] { background:var(--mint) }
-.route-line,.diagram { display:flex; flex-wrap:wrap; gap:8px; list-style:none; padding:0; margin:12px 0 }
-.route-line li,.diagram li { background:var(--mint); padding:6px 10px; border-radius:9px; overflow-wrap:anywhere }
-.diagram { flex-direction:column }
-.diagram li { border-inline-start:4px solid var(--sea) }
+.route-line { display:flex; flex-wrap:wrap; gap:8px; list-style:none; padding:0; margin:12px 0 }
+.route-line li { background:var(--mint); padding:6px 10px; border-radius:9px; overflow-wrap:anywhere }
+.lesson-goal { background:var(--mint); border-left:5px solid var(--sea); border-radius:9px; padding:10px 12px }
+.lesson-boss { margin:14px 0 0; color:var(--sea-dark) }
 .instructions { padding-inline-start:1.35em }
 .instructions li + li { margin-block-start:.4em }
 .prompt { border-block-start:1px solid var(--line); padding-block-start:10px; margin-block:12px }
